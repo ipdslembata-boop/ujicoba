@@ -99,43 +99,69 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-slate-500 uppercase">Total Target</span>
-                <span id="kpi-target" class="text-xl sm:text-2xl font-bold text-slate-900 mt-2">-</span>
-                <div class="text-xs text-slate-400 mt-1">Beban Alokasi</div>
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Target</span>
+                <span id="kpi-target" class="text-xl font-bold text-slate-900 mt-2">-</span>
+                <div class="text-[10px] text-slate-400 mt-1">Beban Alokasi</div>
             </div>
             <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-blue-700 uppercase">Open / Belum</span>
-                <span id="kpi-open" class="text-xl sm:text-2xl font-bold text-blue-900 mt-2">-</span>
-                <div id="pct-open" class="text-xs text-blue-600 mt-1 font-medium">-</div>
+                <span class="text-[10px] font-bold text-blue-700 uppercase">Open / Belum</span>
+                <span id="kpi-open" class="text-xl font-bold text-blue-900 mt-2">-</span>
+                <div id="pct-open" class="text-[10px] text-blue-600 mt-1 font-medium">-</div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 shadow-xs flex flex-col justify-between">
+                <span class="text-[10px] font-bold text-purple-700 uppercase">Draft</span>
+                <span id="kpi-draft" class="text-xl font-bold text-purple-900 mt-2">-</span>
+                <div id="pct-draft" class="text-[10px] text-purple-600 mt-1 font-medium">-</div>
             </div>
             <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-amber-700 uppercase">Submitted / Draft</span>
-                <span id="kpi-submit" class="text-xl sm:text-2xl font-bold text-amber-900 mt-2">-</span>
-                <div id="pct-submit" class="text-xs text-amber-600 mt-1 font-medium">-</div>
+                <span class="text-[10px] font-bold text-amber-700 uppercase">Submitted</span>
+                <span id="kpi-submit" class="text-xl font-bold text-amber-900 mt-2">-</span>
+                <div id="pct-submit" class="text-[10px] text-amber-600 mt-1 font-medium">-</div>
+            </div>
+            <div class="bg-red-50 p-4 rounded-xl border border-red-200 shadow-xs flex flex-col justify-between">
+                <span class="text-[10px] font-bold text-red-700 uppercase">Rejected</span>
+                <span id="kpi-reject" class="text-xl font-bold text-red-900 mt-2">-</span>
+                <div id="pct-reject" class="text-[10px] text-red-600 mt-1 font-medium">-</div>
             </div>
             <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-emerald-700 uppercase">Approved</span>
-                <span id="kpi-approve" class="text-xl sm:text-2xl font-bold text-emerald-900 mt-2">-</span>
-                <div id="pct-approve" class="text-xs text-emerald-600 mt-1 font-medium">-</div>
+                <span class="text-[10px] font-bold text-emerald-700 uppercase">Approved</span>
+                <span id="kpi-approve" class="text-xl font-bold text-emerald-900 mt-2">-</span>
+                <div id="pct-approve" class="text-[10px] text-emerald-600 mt-1 font-medium">-</div>
             </div>
-            <div class="col-span-2 lg:col-span-1 bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-xs flex flex-col justify-between">
-                <span class="text-xs font-bold text-indigo-700 uppercase">Progress Total</span>
-                <span id="kpi-progress" class="text-xl sm:text-2xl font-bold text-indigo-900 mt-2">-</span>
+            <div class="col-span-2 sm:col-span-1 bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-xs flex flex-col justify-between">
+                <span class="text-[10px] font-bold text-indigo-700 uppercase">Progres Kerja</span>
+                <span id="kpi-progress" class="text-xl font-bold text-indigo-900 mt-2">-</span>
                 <div class="w-full bg-indigo-200 rounded-full h-1.5 mt-2 overflow-hidden">
                     <div id="progress-bar-kpi" class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
                 </div>
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-emerald-700">
+                    🏆 Top 5 PML Tertinggi (% Progres)
+                </h3>
+                <div id="top-pml-container" class="space-y-2 divide-y divide-slate-100">
+                    </div>
+            </div>
+            <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-indigo-700">
+                    ⭐ Top 5 PPL Tertinggi (% Progres)
+                </h3>
+                <div id="top-ppl-container" class="space-y-2 divide-y divide-slate-100">
+                    </div>
+            </div>
+        </div>
+
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
             <div class="mb-4">
                 <h3 class="font-bold text-slate-800 text-base">Ringkasan Progress Total Per Orang (PPL Kumulatif)</h3>
-                <p class="text-xs text-slate-500">Menggabungkan beban kerja dari semua desa yang dialokasikan kepada tiap petugas</p>
+                <p class="text-xs text-slate-500">Akumulasi beban kerja dari seluruh wilayah tugas masing-masing PPL (Progres = Submit + Reject + Approve)</p>
             </div>
-            <div id="ppl-summary-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                </div>
+            <div id="ppl-summary-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -164,29 +190,30 @@
             <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
                     <h3 class="font-bold text-slate-800 text-base">Tabel Detail Capaian Petugas Lapangan (Per Desa)</h3>
-                    <p class="text-xs text-slate-500">Menampilkan beban kerja dan realisasi per Desa/Kelurahan petugas</p>
+                    <p class="text-xs text-slate-500">Menampilkan beban kerja rincian per segmentasi Desa/Kelurahan</p>
                 </div>
                 <span id="table-row-count" class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full">0 Petugas / Tugas</span>
             </div>
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
-                        <tr class="bg-slate-100/70 text-slate-600 font-semibold border-b border-slate-200">
+                        <tr class="bg-slate-100/70 text-slate-600 font-semibold border-b border-slate-200 text-xs uppercase">
                             <th class="p-3 pl-4">No</th>
                             <th class="p-3">Korwil / PML</th>
                             <th class="p-3">Nama PPL</th>
                             <th class="p-3">Wilayah Tugas</th>
                             <th class="p-3 text-center">Open</th>
+                            <th class="p-3 text-center">Draft</th>
                             <th class="p-3 text-center">Submit</th>
                             <th class="p-3 text-center">Reject</th>
                             <th class="p-3 text-center">Approve</th>
-                            <th class="p-3 text-center">Total Dok</th>
+                            <th class="p-3 text-center">Total</th>
                             <th class="p-3 pr-4 text-right">Progres %</th>
                         </tr>
                     </thead>
                     <tbody id="data-table-body" class="divide-y divide-slate-100 text-slate-700">
                         <tr>
-                            <td colspan="10" class="text-center py-8 text-slate-400">Sedang memproses data...</td>
+                            <td colspan="11" class="text-center py-8 text-slate-400">Sedang memproses data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -206,19 +233,13 @@
         let progressChart = null;
         let statusPieChart = null;
 
-        // Fallback Mockup Data
         const mockFallbackData = [
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Lamalela", open: 123, draft: 0, submit: 4, reject: 0, approve: 0, total: 127},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Banitobo", open: 129, draft: 0, submit: 13, reject: 1, approve: 5, total: 148},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Lodotodokowa", open: 236, draft: 0, submit: 0, reject: 0, approve: 0, total: 236},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Atakowa", open: 93, draft: 0, submit: 15, reject: 0, approve: 5, total: 113},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lamadale", open: 1, draft: 0, submit: 0, reject: 1, approve: 1, total: 3},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lewoeleng", open: 188, draft: 0, submit: 23, reject: 4, approve: 2, total: 242},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Mediatriks Valentina S. Kayo", kec: "Lebatukan", desa: "Dikesare", open: 172, draft: 0, submit: 6, reject: 4, approve: 11, total: 199},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Mediatriks Valentina S. Kayo", kec: "Lebatukan", desa: "Tapolangu", open: 225, draft: 0, submit: 18, reject: 0, approve: 5, total: 282},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Theodorus Rivaldo Nani Lazaren", kec: "Lebatukan", desa: "Seranggorang", open: 142, draft: 0, submit: 0, reject: 0, approve: 0, total: 142},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Theodorus Rivaldo Nani Lazaren", kec: "Lebatukan", desa: "Balurebong", open: 141, draft: 0, submit: 10, reject: 4, approve: 10, total: 165},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Theodorus Rivaldo Nani Lazaren", kec: "Lebatukan", desa: "Lodotodokowa", open: 48, draft: 0, submit: 0, reject: 0, approve: 0, total: 48}
+            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Lamalela", open: 110, draft: 10, submit: 4, reject: 3, approve: 0, total: 127},
+            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Banitobo", open: 100, draft: 20, submit: 13, reject: 1, approve: 14, total: 148},
+            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Lodotodokowa", open: 200, draft: 30, submit: 4, reject: 2, approve: 0, total: 236},
+            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Yohanes Kopong", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Atakowa", open: 50, draft: 15, submit: 15, reject: 5, approve: 28, total: 113},
+            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Yohanes Kopong", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lamadale", open: 0, draft: 0, submit: 1, reject: 1, approve: 1, total: 3},
+            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Kornelis Lalang", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lewoeleng", open: 100, draft: 40, submit: 23, reject: 4, approve: 75, total: 242}
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -250,7 +271,7 @@
                     updateSyncTime();
                 })
                 .catch(err => {
-                    console.warn("Menggunakan data mockup lokal (CORS restriction / offline).");
+                    console.warn("Menggunakan data mockup lokal.");
                     rawData = [...mockFallbackData];
                     initDashboard();
                     updateSyncTime();
@@ -347,109 +368,173 @@
             });
 
             renderKPIs(filtered);
+            renderLeaderboards(filtered);
             renderPPLSummary(filtered);
             renderCharts(filtered);
             renderTable(filtered);
         }
 
         function renderKPIs(data) {
-            let total = 0, open = 0, submit = 0, reject = 0, approve = 0;
+            let total = 0, open = 0, draft = 0, submit = 0, reject = 0, approve = 0;
             data.forEach(d => {
                 total += d.total;
                 open += d.open;
-                submit += (d.submit + d.draft);
+                draft += d.draft;
+                submit += d.submit;
                 reject += d.reject;
                 approve += d.approve;
             });
 
+            // Hitung progress = (submit + reject + approve) / total
+            const totalProgressDoc = submit + reject + approve;
+            const pctProgress = total > 0 ? ((totalProgressDoc / total) * 100).toFixed(1) : '0.0';
+
             document.getElementById('kpi-target').innerText = total.toLocaleString('id-ID');
             document.getElementById('kpi-open').innerText = open.toLocaleString('id-ID');
+            document.getElementById('kpi-draft').innerText = draft.toLocaleString('id-ID');
             document.getElementById('kpi-submit').innerText = submit.toLocaleString('id-ID');
+            document.getElementById('kpi-reject').innerText = reject.toLocaleString('id-ID');
             document.getElementById('kpi-approve').innerText = approve.toLocaleString('id-ID');
 
-            const pctOpen = total > 0 ? ((open / total) * 100).toFixed(1) : 0;
-            const pctSubmit = total > 0 ? ((submit / total) * 100).toFixed(1) : 0;
-            const pctApprove = total > 0 ? ((approve / total) * 100).toFixed(1) : 0;
-
-            document.getElementById('pct-open').innerText = `${pctOpen}% dari total`;
-            document.getElementById('pct-submit').innerText = `${pctSubmit}% dari total`;
-            document.getElementById('pct-approve').innerText = `${pctApprove}% selesai`;
-            document.getElementById('kpi-progress').innerText = `${pctApprove}%`;
-            document.getElementById('progress-bar-kpi').style.width = `${pctApprove}%`;
+            document.getElementById('pct-open').innerText = total > 0 ? `${((open/total)*100).toFixed(1)}% dari total` : '-';
+            document.getElementById('pct-draft').innerText = total > 0 ? `${((draft/total)*100).toFixed(1)}% dari total` : '-';
+            document.getElementById('pct-submit').innerText = total > 0 ? `${((submit/total)*100).toFixed(1)}% dari total` : '-';
+            document.getElementById('pct-reject').innerText = total > 0 ? `${((reject/total)*100).toFixed(1)}% dari total` : '-';
+            document.getElementById('pct-approve').innerText = total > 0 ? `${((approve/total)*100).toFixed(1)}% selesai` : '-';
+            
+            document.getElementById('kpi-progress').innerText = `${pctProgress}%`;
+            document.getElementById('progress-bar-kpi').style.width = `${pctProgress}%`;
         }
 
-        // Fungsi baru untuk menghitung progres total per PPL (Kumulatif)
+        function renderLeaderboards(data) {
+            // 1. Grouping PML
+            const pmlGroup = {};
+            // 2. Grouping PPL
+            const pplGroup = {};
+
+            data.forEach(item => {
+                if(item.pml) {
+                    if(!pmlGroup[item.pml]) pmlGroup[item.pml] = { progressDoc: 0, total: 0 };
+                    pmlGroup[item.pml].progressDoc += (item.submit + item.reject + item.approve);
+                    pmlGroup[item.pml].total += item.total;
+                }
+                if(item.ppl) {
+                    if(!pplGroup[item.ppl]) pplGroup[item.ppl] = { progressDoc: 0, total: 0 };
+                    pplGroup[item.ppl].progressDoc += (item.submit + item.reject + item.approve);
+                    pplGroup[item.ppl].total += item.total;
+                }
+            });
+
+            // Map & Sort PML
+            const sortedPML = Object.keys(pmlGroup).map(name => {
+                const g = pmlGroup[name];
+                const pct = g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
+                return { name, pct, ...g };
+            }).sort((a, b) => b.pct - a.pct).slice(0, 5);
+
+            // Map & Sort PPL
+            const sortedPPL = Object.keys(pplGroup).map(name => {
+                const g = pplGroup[name];
+                const pct = g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
+                return { name, pct, ...g };
+            }).sort((a, b) => b.pct - a.pct).slice(0, 5);
+
+            // Render PML Container
+            const pmlContainer = document.getElementById('top-pml-container');
+            pmlContainer.innerHTML = sortedPML.length === 0 ? '<p class="text-xs text-slate-400 py-2 text-center">Tidak ada data</p>' : '';
+            sortedPML.forEach((item, idx) => {
+                pmlContainer.innerHTML += `
+                    <div class="flex justify-between items-center py-2 text-xs sm:text-sm">
+                        <span class="truncate font-medium text-slate-700 max-w-[70%]"><b>#${idx+1}</b> ${item.name}</span>
+                        <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">${item.pct}% (${item.progressDoc}/${item.total})</span>
+                    </div>`;
+            });
+
+            // Render PPL Container
+            const pplContainer = document.getElementById('top-ppl-container');
+            pplContainer.innerHTML = sortedPPL.length === 0 ? '<p class="text-xs text-slate-400 py-2 text-center">Tidak ada data</p>' : '';
+            sortedPPL.forEach((item, idx) => {
+                pplContainer.innerHTML += `
+                    <div class="flex justify-between items-center py-2 text-xs sm:text-sm">
+                        <span class="truncate font-medium text-slate-700 max-w-[70%]"><b>#${idx+1}</b> ${item.name}</span>
+                        <span class="font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">${item.pct}% (${item.progressDoc}/${item.total})</span>
+                    </div>`;
+            });
+        }
+
         function renderPPLSummary(data) {
             const summaryContainer = document.getElementById('ppl-summary-container');
             summaryContainer.innerHTML = '';
 
-            // Grouping data by PPL name
-            const pplGroup = {};
+            const pplSummary = {};
             data.forEach(item => {
-                if (!pplGroup[item.ppl]) {
-                    pplGroup[item.ppl] = { open: 0, submit: 0, reject: 0, approve: 0, total: 0, desaList: [] };
+                if (!pplSummary[item.ppl]) {
+                    pplSummary[item.ppl] = { open: 0, draft: 0, submit: 0, reject: 0, approve: 0, total: 0, desaList: [] };
                 }
-                pplGroup[item.ppl].open += item.open;
-                pplGroup[item.ppl].submit += (item.submit + item.draft);
-                pplGroup[item.ppl].reject += item.reject;
-                pplGroup[item.ppl].approve += item.approve;
-                pplGroup[item.ppl].total += item.total;
-                if (!pplGroup[item.ppl].desaList.includes(item.desa)) {
-                    pplGroup[item.ppl].desaList.push(item.desa);
+                pplSummary[item.ppl].open += item.open;
+                pplSummary[item.ppl].draft += item.draft;
+                pplSummary[item.ppl].submit += item.submit;
+                pplSummary[item.ppl].reject += item.reject;
+                pplSummary[item.ppl].approve += item.approve;
+                pplSummary[item.ppl].total += item.total;
+                if (!pplSummary[item.ppl].desaList.includes(item.desa)) {
+                    pplSummary[item.ppl].desaList.push(item.desa);
                 }
             });
 
-            const keys = Object.keys(pplGroup);
+            const keys = Object.keys(pplSummary);
             if(keys.length === 0) {
-                summaryContainer.innerHTML = `<p class="col-span-full text-center text-sm text-slate-400 py-4">Tidak ada data untuk ringkasan PPL</p>`;
+                summaryContainer.innerHTML = `<p class="col-span-full text-center text-sm text-slate-400 py-4">Tidak ada data petugas</p>`;
                 return;
             }
 
             keys.forEach(pplName => {
-                const group = pplGroup[pplName];
-                const pct = group.total > 0 ? ((group.approve / group.total) * 100).toFixed(1) : '0.0';
+                const group = pplSummary[pplName];
+                const progressDoc = group.submit + group.reject + group.approve;
+                const pct = group.total > 0 ? ((progressDoc / group.total) * 100).toFixed(1) : '0.0';
                 
-                let colorClass = 'bg-slate-100 text-slate-800';
+                let colorClass = 'bg-white border-slate-200';
                 let progressColor = 'bg-slate-400';
-                if (parseFloat(pct) >= 25) { colorClass = 'bg-emerald-50 border-emerald-200'; progressColor = 'bg-emerald-600'; }
-                else if (parseFloat(pct) > 0) { colorClass = 'bg-amber-50 border-amber-200'; progressColor = 'bg-amber-500'; }
-                else { colorClass = 'bg-white border-slate-200'; }
+                if (parseFloat(pct) >= 75) { colorClass = 'bg-emerald-50/50 border-emerald-200'; progressColor = 'bg-emerald-600'; }
+                else if (parseFloat(pct) > 0) { colorClass = 'bg-amber-50/50 border-amber-200'; progressColor = 'bg-amber-500'; }
 
-                const cardHtml = `
-                    <div class="p-4 rounded-xl border ${colorClass} shadow-xs flex flex-col justify-between space-y-2">
+                summaryContainer.innerHTML += `
+                    <div class="p-4 rounded-xl border ${colorClass} shadow-xs flex flex-col justify-between space-y-3">
                         <div>
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-slate-900 text-sm truncate max-w-[70%]">${pplName}</h4>
-                                <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">${pct}%</span>
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate max-w-[75%]">${pplName}</h4>
+                                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800">${pct}%</span>
                             </div>
-                            <p class="text-[11px] text-slate-400 truncate mt-0.5">Wilayah: ${group.desaList.join(', ')}</p>
+                            <p class="text-[10px] text-slate-400 truncate mt-0.5">Wilayah: ${group.desaList.join(', ')}</p>
+                        </div>
+                        <div class="grid grid-cols-5 text-center text-[10px] gap-1 bg-slate-100/50 p-1.5 rounded-lg text-slate-600 font-medium">
+                            <div><div class="text-blue-600">${group.open}</div>Op</div>
+                            <div><div class="text-purple-600">${group.draft}</div>Dr</div>
+                            <div><div class="text-amber-600">${group.submit}</div>Sub</div>
+                            <div><div class="text-red-500">${group.reject}</div>Rej</div>
+                            <div><div class="text-emerald-600">${group.approve}</div>App</div>
                         </div>
                         <div class="space-y-1">
-                            <div class="flex justify-between text-[11px] text-slate-500">
-                                <span>Approve: <b>${group.approve}</b></span>
-                                <span>Belum/Open: <b>${group.open}</b></span>
-                                <span>Total: <b>${group.total}</b></span>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                                <div class="${progressColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
                             </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                                <div class="${progressColor} h-2 rounded-full" style="width: ${pct}%"></div>
-                            </div>
+                            <div class="text-[9px] text-right text-slate-400">Prog: <b>${progressDoc}</b> / Total: <b>${group.total}</b></div>
                         </div>
-                    </div>
-                `;
-                summaryContainer.innerHTML += cardHtml;
+                    </div>`;
             });
         }
 
         function renderCharts(data) {
             const chartData = data.slice(0, 15);
-            // 1. MEMBERIKAN NAMA DESA TIAP BAR (Format: Nama PPL - Desa)
             const labels = chartData.map(d => {
-                const shortPpl = d.ppl.length > 12 ? d.ppl.substring(0, 12) + '..' : d.ppl;
+                const shortPpl = d.ppl.length > 10 ? d.ppl.substring(0, 10) + '..' : d.ppl;
                 return `${shortPpl} (${d.desa})`;
             });
             
             const openDataset = chartData.map(d => d.open);
-            const submitDataset = chartData.map(d => d.submit + d.draft);
+            const draftDataset = chartData.map(d => d.draft);
+            const submitDataset = chartData.map(d => d.submit);
+            const rejectDataset = chartData.map(d => d.reject);
             const approveDataset = chartData.map(d => d.approve);
 
             if (progressChart) progressChart.destroy();
@@ -461,7 +546,9 @@
                     labels: labels,
                     datasets: [
                         { label: 'Approved', data: approveDataset, backgroundColor: '#10b981' },
-                        { label: 'Submitted / Draft', data: submitDataset, backgroundColor: '#f59e0b' },
+                        { label: 'Submitted', data: submitDataset, backgroundColor: '#f59e0b' },
+                        { label: 'Rejected', data: rejectDataset, backgroundColor: '#ef4444' },
+                        { label: 'Draft', data: draftDataset, backgroundColor: '#a855f7' },
                         { label: 'Open / Belum', data: openDataset, backgroundColor: '#3b82f6' }
                     ]
                 },
@@ -469,19 +556,21 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { stacked: true, ticks: { font: { size: 10 } } },
+                        x: { stacked: true, ticks: { font: { size: 9 } } },
                         y: { stacked: true }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12 } }
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
                     }
                 }
             });
 
-            let totalOpen = 0, totalSubmit = 0, totalApprove = 0;
+            let totalOpen = 0, totalDraft = 0, totalSubmit = 0, totalReject = 0, totalApprove = 0;
             data.forEach(d => {
                 totalOpen += d.open;
-                totalSubmit += (d.submit + d.draft);
+                totalDraft += d.draft;
+                totalSubmit += d.submit;
+                totalReject += d.reject;
                 totalApprove += d.approve;
             });
 
@@ -490,17 +579,17 @@
             statusPieChart = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Open', 'Submitted', 'Approved'],
+                    labels: ['Open', 'Draft', 'Submitted', 'Rejected', 'Approved'],
                     datasets: [{
-                        data: [totalOpen, totalSubmit, totalApprove],
-                        backgroundColor: ['#3b82f6', '#f59e0b', '#10b981']
+                        data: [totalOpen, totalDraft, totalSubmit, totalReject, totalApprove],
+                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#10b981']
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
                     }
                 }
             });
@@ -511,34 +600,36 @@
             document.getElementById('table-row-count').innerText = `${data.length} Petugas / Tugas`;
             
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-6 text-slate-400">Tidak ada data petugas pencacah yang cocok dengan filter</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">Tidak ada data tugas pencacah yang cocok dengan filter</td></tr>`;
                 return;
             }
 
             let html = '';
             data.forEach((item, index) => {
-                const pct = item.total > 0 ? ((item.approve / item.total) * 100).toFixed(1) : '0.0';
+                const progressDoc = item.submit + item.reject + item.approve;
+                const pct = item.total > 0 ? ((progressDoc / item.total) * 100).toFixed(1) : '0.0';
                 
                 let badgeClass = 'bg-slate-100 text-slate-700';
-                if (parseFloat(pct) >= 25) badgeClass = 'bg-emerald-100 text-emerald-800 font-semibold';
+                if (parseFloat(pct) >= 75) badgeClass = 'bg-emerald-100 text-emerald-800 font-semibold';
                 else if (parseFloat(pct) > 0) badgeClass = 'bg-amber-100 text-amber-800';
 
                 html += `<tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-3 pl-4 font-medium text-slate-400">${index + 1}</td>
+                    <td class="p-3 pl-4 font-medium text-slate-400 text-xs">${index + 1}</td>
                     <td class="p-3">
-                        <div class="font-semibold text-slate-900 text-xs sm:text-sm">${item.korwil}</div>
-                        <div class="text-[11px] text-slate-400">PML: ${item.pml}</div>
+                        <div class="font-semibold text-slate-900 text-xs">${item.korwil}</div>
+                        <div class="text-[10px] text-slate-400">PML: ${item.pml}</div>
                     </td>
-                    <td class="p-3 font-medium text-slate-800 text-xs sm:text-sm">${item.ppl}</td>
-                    <td class="p-3 text-xs sm:text-sm">
+                    <td class="p-3 font-medium text-slate-800 text-xs">${item.ppl}</td>
+                    <td class="p-3 text-xs">
                         <div class="text-slate-700">${item.kec}</div>
-                        <div class="text-xs text-slate-400 font-medium">${item.desa}</div>
+                        <div class="text-[10px] text-slate-400 font-medium">${item.desa}</div>
                     </td>
-                    <td class="p-3 text-center text-blue-600 font-medium">${item.open}</td>
-                    <td class="p-3 text-center text-amber-600 font-medium">${item.submit}</td>
-                    <td class="p-3 text-center text-red-500">${item.reject}</td>
-                    <td class="p-3 text-center text-emerald-600 font-bold">${item.approve}</td>
-                    <td class="p-3 text-center font-semibold text-slate-600">${item.total}</td>
+                    <td class="p-3 text-center text-blue-600 font-medium text-xs">${item.open}</td>
+                    <td class="p-3 text-center text-purple-600 font-medium text-xs">${item.draft}</td>
+                    <td class="p-3 text-center text-amber-600 font-medium text-xs">${item.submit}</td>
+                    <td class="p-3 text-center text-red-500 text-xs">${item.reject}</td>
+                    <td class="p-3 text-center text-emerald-600 font-bold text-xs">${item.approve}</td>
+                    <td class="p-3 text-center font-semibold text-slate-600 text-xs">${item.total}</td>
                     <td class="p-3 pr-4 text-right">
                         <span class="inline-block px-2 py-0.5 rounded text-xs ${badgeClass}">${pct}%</span>
                     </td>
