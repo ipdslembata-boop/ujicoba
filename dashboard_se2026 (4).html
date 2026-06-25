@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring Lapangan Sensus Ekonomi 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Top Navbar -->
+    <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-50 px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid :fa-chart-line text-2xl text-amber-400"></i>
+            <div>
+                <h1 class="text-lg font-bold tracking-wide">DASHBOARD SE2026</h1>
+                <p class="text-xs text-blue-200">Monitoring Progress Pendataan Lapangan</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+            <span id="sync-time" class="text-xs bg-blue-800 px-3 py-1.5 rounded-lg border border-blue-700 text-blue-200">
+                <i class="fa-solid fa-sync fa-spin mr-1 text-amber-400"></i> Memuat data...
+            </span>
+            <button onclick="fetchData()" class="bg-amber-500 hover:bg-amber-600 text-blue-950 font-semibold text-xs px-3 py-1.5 rounded-lg transition-all shadow flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-rotate"></i> Sync Data
+            </button>
+            <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit?gid=959635293#gid=959635293" target="_blank" class="bg-green-600 hover:bg-green-700 text-white font-semibold text-xs px-3 py-1.5 rounded-lg transition-all shadow flex items-center gap-1.5">
+                <i class="fa-solid fa-file-excel"></i> Update Progress (Excel)
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto p-4 space-y-6">
+
+        <!-- Filters Grid -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Filter Korwil</label>
+                <select id="filter-korwil" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="">-- Semua Korwil --</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Filter PML</label>
+                <select id="filter-pml" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="">-- Semua PML --</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Cari Petugas (PPL / Desa)</label>
+                <div class="relative">
+                    <input type="text" id="search-input" oninput="applyFilters()" placeholder="Ketik nama PPL atau Desa..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 pl-8 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-3 text-slate-400 text-sm"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary KPI Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase">Total Target</span>
+                <span id="kpi-target" class="text-2xl font-bold text-slate-800 mt-2">0</span>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-xl shadow-sm border border-blue-200 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-blue-700 uppercase">Approve</span>
+                <span id="kpi-approve" class="text-2xl font-bold text-blue-900 mt-2">0</span>
+            </div>
+            <div class="bg-amber-50 p-4 rounded-xl shadow-sm border border-amber-200 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-amber-700 uppercase">Submit / Draft</span>
+                <span id="kpi-submit" class="text-2xl font-bold text-amber-900 mt-2">0</span>
+            </div>
+            <div class="bg-red-50 p-4 rounded-xl shadow-sm border border-red-200 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-red-700 uppercase">Reject</span>
+                <span id="kpi-reject" class="text-2xl font-bold text-red-900 mt-2">0</span>
+            </div>
+            <div class="bg-green-50 p-4 rounded-xl shadow-sm border border-green-200 flex flex-col justify-between col-span-2 lg:col-span-1">
+                <span class="text-xs font-semibold text-green-700 uppercase">Total Progress</span>
+                <span id="kpi-progress" class="text-2xl font-bold text-green-900 mt-2">0%</span>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-bar text-blue-600"></i> Progress Akumulasi Status Data
+                </h3>
+                <div class="relative h-64">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-green-600"></i> Top 5 Progress PML Terbaik
+                </h3>
+                <div class="relative h-64">
+                    <canvas id="pmlChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed view tabs -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-slate-100 border-b border-slate-200 flex">
+                <button onclick="switchTab('ppl')" id="tab-btn-ppl" class="px-5 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600 focus:outline-none cursor-pointer">
+                    <i class="fa-solid fa-users mr-1"></i> Rekap Progress Per PPL (Unique)
+                </button>
+                <button onclick="switchTab('desa')" id="tab-btn-desa" class="px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-800 focus:outline-none cursor-pointer">
+                    <i class="fa-solid fa-map-location-dot mr-1"></i> Detail Per Desa/Kelurahan
+                </button>
+            </div>
+
+            <!-- Table: Unique PPL Progress -->
+            <div id="tab-ppl" class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-semibold">
+                            <th class="p-3">Nama PPL</th>
+                            <th class="p-3">PML / Korwil</th>
+                            <th class="p-3 text-center">Alokasi Desa</th>
+                            <th class="p-3 text-center">Target (Jumlah)</th>
+                            <th class="p-3 text-center">Approve</th>
+                            <th class="p-3 text-center">Submit</th>
+                            <th class="p-3 text-center">Open</th>
+                            <th class="p-3 text-right">Progress %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ppl-table-body" class="divide-y divide-slate-100 text-slate-700">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table: Detailed Desa View -->
+            <div id="tab-desa" class="overflow-x-auto hidden">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-semibold">
+                            <th class="p-3">Desa / Kelurahan</th>
+                            <th class="p-3">Kecamatan</th>
+                            <th class="p-3">Nama PPL</th>
+                            <th class="p-3">Nama PML</th>
+                            <th class="p-3 text-center">Open</th>
+                            <th class="p-3 text-center">Submit</th>
+                            <th class="p-3 text-center">Reject</th>
+                            <th class="p-3 text-center">Approve</th>
+                            <th class="p-3 text-center">Total</th>
+                            <th class="p-3 text-right">Progress %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="desa-table-body" class="divide-y divide-slate-100 text-slate-700">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- App Script logic -->
+    <script>
+        // Use the Google Sheet CSV export link directly to fetch data dynamically
+        const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/export?format=csv&gid=959635293";
+        
+        let rawData = [];
+        let filteredData = [];
+        let mainChart = null;
+        let pmlChart = null;
+        let currentTab = 'ppl';
+
+        // Fetch data automatically on load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+
+        function fetchData() {
+            document.getElementById('sync-time').innerHTML = `<i class="fa-solid fa-sync fa-spin mr-1 text-amber-400"></i> Menyinkronkan...`;
+            
+            fetch(sheetCsvUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Gagal mengambil data');
+                    return response.text();
+                })
+                .then(csvText => {
+                    parseCSV(csvText);
+                    document.getElementById('sync-time').innerHTML = `<i class="fa-solid fa-clock-rotate-left text-green-400 mr-1"></i> Terakhir Sync: ${new Date().toLocaleTimeString('id-ID')} WITA`;
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById('sync-time').innerHTML = `<i class="fa-solid fa-circle-exclamation text-red-500 mr-1"></i> Gagal Memuat Data`;
+                    alert('Gagal menyinkronkan data langsung dari Google Sheets. Pastikan spreadsheet dapat diakses publik atau periksa koneksi Anda.');
+                });
+        }
+
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            if (lines.length < 2) return;
+            
+            // Extract header and map indexes safely
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            
+            const idxKorwil = headers.indexOf("Korwil");
+            const idxPML = headers.indexOf("Nama PML");
+            const idxPPL = headers.indexOf("Nama PPL");
+            const idxEmail = headers.indexOf("Email");
+            const idxKec = headers.indexOf("Kecamatan");
+            const idxDesa = headers.indexOf("Desa/Kel");
+            const idxOpen = headers.indexOf("Open");
+            const idxDraft = headers.indexOf("Draft");
+            const idxSubmit = headers.indexOf("Submit");
+            const idxReject = headers.indexOf("Reject");
+            const idxApprove = headers.indexOf("Approve");
+            const idxJumlah = headers.indexOf("Jumlah");
+
+            rawData = [];
+            let lastKorwil = "";
+            let lastPML = "";
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                // Smart splitting CSV with quotes
+                let row = [];
+                let insideQuote = false;
+                let entry = "";
+                for (let char of lines[i]) {
+                    if (char === '"') {
+                        insideQuote = !insideQuote;
+                    } else if (char === ',' && !insideQuote) {
+                        row.push(entry.trim());
+                        entry = "";
+                    } else {
+                        entry += char;
+                    }
+                }
+                row.push(entry.trim());
+
+                if (row.length < idxDesa) continue;
+
+                // Carry forward empty fields for group structure if needed
+                let korwil = row[idxKorwil] || lastKorwil;
+                let pml = row[idxPML] || lastPML;
+                if(row[idxKorwil]) lastKorwil = row[idxKorwil];
+                if(row[idxPML]) lastPML = row[idxPML];
+
+                let ppl = row[idxPPL] || "";
+                let email = row[idxEmail] || "";
+                let desa = row[idxDesa] || "";
+                
+                if (!ppl && !desa) continue; // Skip header formatting rows or empty lines
+
+                rawData.push({
+                    korwil: korwil.replace(/^"|"$/g, ''),
+                    pml: pml.replace(/^"|"$/g, ''),
+                    ppl: ppl.replace(/^"|"$/g, ''),
+                    email: email.replace(/^"|"$/g, ''),
+                    kecamatan: (row[idxKec] || "").replace(/^"|"$/g, ''),
+                    desa: desa.replace(/^"|"$/g, ''),
+                    open: parseInt(row[idxOpen]) || 0,
+                    draft: parseInt(row[idxDraft]) || 0,
+                    submit: parseInt(row[idxSubmit]) || 0,
+                    reject: parseInt(row[idxReject]) || 0,
+                    approve: parseInt(row[idxApprove]) || 0,
+                    jumlah: parseInt(row[idxJumlah]) || 0
+                });
+            }
+
+            populateDropdowns();
+            applyFilters();
+        }
+
+        function populateDropdowns() {
+            const korwils = [...new Set(rawData.map(item => item.korwil))].filter(Boolean);
+            const pmls = [...new Set(rawData.map(item => item.pml))].filter(Boolean);
+
+            const korwilSelect = document.getElementById('filter-korwil');
+            const pmlSelect = document.getElementById('filter-pml');
+
+            // Save old selections
+            const oldKorwil = korwilSelect.value;
+            const oldPml = pmlSelect.value;
+
+            korwilSelect.innerHTML = '<option value="">-- Semua Korwil --</option>';
+            pwils = korwils.sort().forEach(k => {
+                korwilSelect.innerHTML += `<option value="${k}">${k}</option>`;
+            });
+
+            pmlSelect.innerHTML = '<option value="">-- Semua PML --</option>';
+            pmls.sort().forEach(p => {
+                pmlSelect.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+
+            korwilSelect.value = oldKorwil;
+            pmlSelect.value = oldPml;
+        }
+
+        function applyFilters() {
+            const korwilFilter = document.getElementById('filter-korwil').value;
+            const pmlFilter = document.getElementById('filter-pml').value;
+            const searchText = document.getElementById('search-input').value.toLowerCase();
+
+            filteredData = rawData.filter(item => {
+                const matchKorwil = !korwilFilter || item.korwil === korwilFilter;
+                const matchPml = !pmlFilter || item.pml === pmlFilter;
+                const matchSearch = !searchText || 
+                                    item.ppl.toLowerCase().includes(searchText) || 
+                                    item.desa.toLowerCase().includes(searchText) ||
+                                    item.kecamatan.toLowerCase().includes(searchText);
+                return matchKorwil && matchPml && matchSearch;
+            });
+
+            updateKPIs();
+            updateCharts();
+            renderTables();
+        }
+
+        function updateKPIs() {
+            let totalTarget = 0;
+            let totalOpen = 0;
+            let totalSubmit = 0;
+            let totalReject = 0;
+            let totalApprove = 0;
+
+            filteredData.forEach(item => {
+                totalTarget += item.jumlah;
+                totalOpen += item.open;
+                totalSubmit += (item.submit + item.draft);
+                totalReject += item.reject;
+                totalApprove += item.approve;
+            });
+
+            document.getElementById('kpi-target').innerText = totalTarget.toLocaleString('id-ID');
+            document.getElementById('kpi-approve').innerText = totalApprove.toLocaleString('id-ID');
+            document.getElementById('kpi-submit').innerText = totalSubmit.toLocaleString('id-ID');
+            document.getElementById('kpi-reject').innerText = totalReject.toLocaleString('id-ID');
+            
+            const progressPct = totalTarget > 0 ? ((totalApprove / totalTarget) * 100).toFixed(2) : "0.00";
+            document.getElementById('kpi-progress').innerText = progressPct + "%";
+        }
+
+        function updateCharts() {
+            let open = 0, submit = 0, reject = 0, approve = 0;
+            let pmlGroups = {};
+
+            filteredData.forEach(item => {
+                open += item.open;
+                submit += item.submit + item.draft;
+                reject += item.reject;
+                approve += item.approve;
+
+                if(item.pml) {
+                    if(!pmlGroups[item.pml]) pmlGroups[item.pml] = { target: 0, approve: 0 };
+                    pmlGroups[item.pml].target += item.jumlah;
+                    pmlGroups[item.pml].approve += item.approve;
+                }
+            });
+
+            // Destroy existing charts to reload seamlessly
+            if (mainChart) mainChart.destroy();
+            if (pmlChart) pmlChart.destroy();
+
+            // Main Stacked Status Chart
+            const ctxMain = document.getElementById('mainChart').getContext('2d');
+            mainChart = new Chart(ctxMain, {
+                type: 'bar',
+                data: {
+                    labels: ['Status Pendataan Lapangan'],
+                    datasets: [
+                        { label: 'Approve', data: [approve], backgroundColor: '#16a34a' },
+                        { label: 'Submit / Draft', data: [submit], backgroundColor: '#f59e0b' },
+                        { label: 'Reject', data: [reject], backgroundColor: '#dc2626' },
+                        { label: 'Open (Belum Dimulai)', data: [open], backgroundColor: '#94a3b8' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { x: { stacked: true }, y: { stacked: true } },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Top PML Performance Chart
+            let pmlArr = Object.keys(pmlGroups).map(key => {
+                let pct = pmlGroups[key].target > 0 ? (pmlGroups[key].approve / pmlGroups[key].target * 100) : 0;
+                return { name: key, percentage: pct };
+            }).sort((a,b) => b.percentage - a.percentage).slice(0, 5);
+
+            const ctxPml = document.getElementById('pmlChart').getContext('2d');
+            pmlChart = new Chart(ctxPml, {
+                type: 'bar',
+                data: {
+                    labels: pmlArr.map(p => p.name),
+                    datasets: [{
+                        label: 'Persentase Approve (%)',
+                        data: pmlArr.map(p => p.percentage.toFixed(1)),
+                        backgroundColor: '#1e3a8a',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: { x: { max: 100 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function renderTables() {
+            // Render PPL Table (Aggregating double names safely using unique Name + Email combination)
+            let pplMap = {};
+            filteredData.forEach(item => {
+                const uniqueKey = `${item.ppl.trim()}_${item.email.trim()}`;
+                if (!pplMap[uniqueKey]) {
+                    pplMap[uniqueKey] = {
+                        nama: item.ppl,
+                        email: item.email,
+                        pml: item.pml,
+                        korwil: item.korwil,
+                        desaCount: 0,
+                        open: 0,
+                        submit: 0,
+                        reject: 0,
+                        approve: 0,
+                        total: 0
+                    };
+                }
+                pplMap[uniqueKey].desaCount += 1;
+                pplMap[uniqueKey].open += item.open;
+                pplMap[uniqueKey].submit += item.submit + item.draft;
+                pplMap[uniqueKey].reject += item.reject;
+                pplMap[uniqueKey].approve += item.approve;
+                pplMap[uniqueKey].total += item.jumlah;
+            });
+
+            const pplBody = document.getElementById('ppl-table-body');
+            pplBody.innerHTML = '';
+            Object.values(pplMap).forEach(p => {
+                const pct = p.total > 0 ? ((p.approve / p.total) * 100).toFixed(1) : "0.0";
+                pplBody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-3 font-semibold text-slate-800">${p.nama}<br><span class="text-[10px] text-slate-400 font-normal">${p.email}</span></td>
+                        <td class="p-3 text-slate-600">${p.pml}<br><span class="text-[10px] text-slate-400">${p.korwil}</span></td>
+                        <td class="p-3 text-center font-medium">${p.desaCount} Desa</td>
+                        <td class="p-3 text-center font-bold text-slate-600">${p.total}</td>
+                        <td class="p-3 text-center text-green-600 font-semibold">${p.approve}</td>
+                        <td class="p-3 text-center text-amber-600 font-semibold">${p.submit}</td>
+                        <td class="p-3 text-center text-slate-400">${p.open}</td>
+                        <td class="p-3 text-right">
+                            <span class="inline-block px-2 py-1 rounded text-xs font-bold ${p.approve == p.total && p.total > 0 ? 'bg-green-100 text-green-800' : 'bg-blue-50 text-blue-800'}">
+                                ${pct}%
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Render Desa Table
+            const desaBody = document.getElementById('desa-table-body');
+            desaBody.innerHTML = '';
+            filteredData.forEach(item => {
+                const pct = item.jumlah > 0 ? ((item.approve / item.jumlah) * 100).toFixed(1) : "0.0";
+                desaBody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-3 font-bold text-slate-700 bg-slate-50/50"><i class="fa-solid fa-location-dot text-red-400 mr-1"></i> ${item.desa}</td>
+                        <td class="p-3 text-slate-600">${item.kecamatan}</td>
+                        <td class="p-3 font-medium text-slate-800">${item.ppl}</td>
+                        <td class="p-3 text-slate-600">${item.pml}</td>
+                        <td class="p-3 text-center text-slate-400">${item.open}</td>
+                        <td class="p-3 text-center text-amber-600">${item.submit + item.draft}</td>
+                        <td class="p-3 text-center text-red-600">${item.reject}</td>
+                        <td class="p-3 text-center text-green-600 font-bold">${item.approve}</td>
+                        <td class="p-3 text-center font-bold text-slate-700">${item.jumlah}</td>
+                        <td class="p-3 text-right font-bold text-blue-700">${pct}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            if(tab === 'ppl') {
+                document.getElementById('tab-ppl').classList.remove('hidden');
+                document.getElementById('tab-desa').classList.add('hidden');
+                document.getElementById('tab-btn-ppl').className = "px-5 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600 focus:outline-none cursor-pointer";
+                document.getElementById('tab-btn-desa').className = "px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-800 focus:outline-none cursor-pointer";
+            } else {
+                document.getElementById('tab-ppl').classList.add('hidden');
+                document.getElementById('tab-desa').classList.remove('hidden');
+                document.getElementById('tab-btn-ppl').className = "px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-800 focus:outline-none cursor-pointer";
+                document.getElementById('tab-btn-desa').className = "px-5 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600 focus:outline-none cursor-pointer";
+            }
+        }
+    </script>
+</body>
+</html>
