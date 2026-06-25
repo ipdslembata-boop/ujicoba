@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -139,27 +139,35 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
+            <div class="mb-4">
+                <h3 class="font-bold text-slate-800 text-base">📊 Grafik Komparasi Persentase Capaian Per Korwil</h3>
+                <p class="text-xs text-slate-500">Menampilkan persentase pencapaian kerja akumulatif (Submit + Reject + Approve) dari setiap Koordinator Wilayah</p>
+            </div>
+            <div class="relative h-64 sm:h-80">
+                <canvas id="korwilPercentageChart"></canvas>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
-                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-emerald-700">
-                    🏆 Top 5 PML Tertinggi (% Progres)
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-red-600">
+                    ⚠️ Top 5 PML Terendah (% Progres)
                 </h3>
-                <div id="top-pml-container" class="space-y-2 divide-y divide-slate-100">
-                    </div>
+                <div id="top-pml-container" class="space-y-2 divide-y divide-slate-100"></div>
             </div>
             <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
-                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-indigo-700">
-                    ⭐ Top 5 PPL Tertinggi (% Progres)
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-rose-600">
+                    📉 Top 5 PPL Terendah (% Progres)
                 </h3>
-                <div id="top-ppl-container" class="space-y-2 divide-y divide-slate-100">
-                    </div>
+                <div id="top-ppl-container" class="space-y-2 divide-y divide-slate-100"></div>
             </div>
         </div>
 
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
             <div class="mb-4">
                 <h3 class="font-bold text-slate-800 text-base">Ringkasan Progress Total Per Orang (PPL Kumulatif)</h3>
-                <p class="text-xs text-slate-500">Akumulasi beban kerja dari seluruh wilayah tugas masing-masing PPL (Progres = Submit + Reject + Approve)</p>
+                <p class="text-xs text-slate-500">Akumulasi beban kerja dari seluruh wilayah tugas masing-masing PPL</p>
             </div>
             <div id="ppl-summary-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
@@ -167,8 +175,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs lg:col-span-2">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-slate-800 text-base">Grafik Progres Capaian Dokumen Per Desa</h3>
-                    <span class="text-xs text-slate-400">Berdasarkan Filter</span>
+                    <h3 class="font-bold text-slate-800 text-base">Grafik Progres Capaian Dokumen Per Desa (Filter Aktif)</h3>
+                    <span class="text-xs text-slate-400">Top 15 Baris</span>
                 </div>
                 <div class="relative h-64 sm:h-80">
                     <canvas id="progressChart"></canvas>
@@ -232,14 +240,13 @@
         let rawData = [];
         let progressChart = null;
         let statusPieChart = null;
+        let korwilPercentageChart = null;
 
         const mockFallbackData = [
             {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Lamalela", open: 110, draft: 10, submit: 4, reject: 3, approve: 0, total: 127},
             {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Banitobo", open: 100, draft: 20, submit: 13, reject: 1, approve: 14, total: 148},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Lodotodokowa", open: 200, draft: 30, submit: 4, reject: 2, approve: 0, total: 236},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Yohanes Kopong", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Atakowa", open: 50, draft: 15, submit: 15, reject: 5, approve: 28, total: 113},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Yohanes Kopong", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lamadale", open: 0, draft: 0, submit: 1, reject: 1, approve: 1, total: 3},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Kornelis Lalang", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lewoeleng", open: 100, draft: 40, submit: 23, reject: 4, approve: 75, total: 242}
+            {korwil: "Ahmad Dani, S.E", pml: "Yohanes Kopong", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Atakowa", open: 50, draft: 15, submit: 15, reject: 5, approve: 28, total: 113},
+            {korwil: "Siti Rahma, S.Stat", pml: "Kornelis Lalang", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lewoeleng", open: 100, draft: 40, submit: 23, reject: 4, approve: 75, total: 242}
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -368,7 +375,8 @@
             });
 
             renderKPIs(filtered);
-            renderLeaderboards(filtered);
+            renderLeaderboards(filtered); // Merender top 5 terendah
+            renderKorwilPercentageChart(filtered);
             renderPPLSummary(filtered);
             renderCharts(filtered);
             renderTable(filtered);
@@ -385,7 +393,6 @@
                 approve += d.approve;
             });
 
-            // Hitung progress = (submit + reject + approve) / total
             const totalProgressDoc = submit + reject + approve;
             const pctProgress = total > 0 ? ((totalProgressDoc / total) * 100).toFixed(1) : '0.0';
 
@@ -406,10 +413,9 @@
             document.getElementById('progress-bar-kpi').style.width = `${pctProgress}%`;
         }
 
+        // REVISI LOGIKA: Diurutkan secara ASCENDING (Kecil ke Besar) untuk mencari Terendah
         function renderLeaderboards(data) {
-            // 1. Grouping PML
             const pmlGroup = {};
-            // 2. Grouping PPL
             const pplGroup = {};
 
             data.forEach(item => {
@@ -425,40 +431,96 @@
                 }
             });
 
-            // Map & Sort PML
+            // .sort((a,b) => a.pct - b.pct) membuat urutan dari persen terendah ke tertinggi
             const sortedPML = Object.keys(pmlGroup).map(name => {
                 const g = pmlGroup[name];
                 const pct = g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
                 return { name, pct, ...g };
-            }).sort((a, b) => b.pct - a.pct).slice(0, 5);
+            }).sort((a, b) => a.pct - b.pct).slice(0, 5);
 
-            // Map & Sort PPL
             const sortedPPL = Object.keys(pplGroup).map(name => {
                 const g = pplGroup[name];
                 const pct = g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
                 return { name, pct, ...g };
-            }).sort((a, b) => b.pct - a.pct).slice(0, 5);
+            }).sort((a, b) => a.pct - b.pct).slice(0, 5);
 
-            // Render PML Container
             const pmlContainer = document.getElementById('top-pml-container');
             pmlContainer.innerHTML = sortedPML.length === 0 ? '<p class="text-xs text-slate-400 py-2 text-center">Tidak ada data</p>' : '';
             sortedPML.forEach((item, idx) => {
                 pmlContainer.innerHTML += `
                     <div class="flex justify-between items-center py-2 text-xs sm:text-sm">
                         <span class="truncate font-medium text-slate-700 max-w-[70%]"><b>#${idx+1}</b> ${item.name}</span>
-                        <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">${item.pct}% (${item.progressDoc}/${item.total})</span>
+                        <span class="font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">${item.pct}%</span>
                     </div>`;
             });
 
-            // Render PPL Container
             const pplContainer = document.getElementById('top-ppl-container');
             pplContainer.innerHTML = sortedPPL.length === 0 ? '<p class="text-xs text-slate-400 py-2 text-center">Tidak ada data</p>' : '';
             sortedPPL.forEach((item, idx) => {
                 pplContainer.innerHTML += `
                     <div class="flex justify-between items-center py-2 text-xs sm:text-sm">
                         <span class="truncate font-medium text-slate-700 max-w-[70%]"><b>#${idx+1}</b> ${item.name}</span>
-                        <span class="font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">${item.pct}% (${item.progressDoc}/${item.total})</span>
+                        <span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">${item.pct}%</span>
                     </div>`;
+            });
+        }
+
+        function renderKorwilPercentageChart(data) {
+            const korwilGroup = {};
+            data.forEach(item => {
+                if(!item.korwil) return;
+                if(!korwilGroup[item.korwil]) korwilGroup[item.korwil] = { progressDoc: 0, total: 0 };
+                korwilGroup[item.korwil].progressDoc += (item.submit + item.reject + item.approve);
+                korwilGroup[item.korwil].total += item.total;
+            });
+
+            const labels = Object.keys(korwilGroup).sort();
+            const percentages = labels.map(name => {
+                const g = korwilGroup[name];
+                return g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
+            });
+
+            if(korwilPercentageChart) korwilPercentageChart.destroy();
+
+            const ctx = document.getElementById('korwilPercentageChart').getContext('2d');
+            korwilPercentageChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Persentase Progres (%)',
+                        data: percentages,
+                        backgroundColor: '#4f46e5',
+                        borderRadius: 6,
+                        maxBarThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: value => value + '%' }
+                        },
+                        x: {
+                            ticks: { font: { size: 10, weight: '600' } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const korwilName = context.label;
+                                    const g = korwilGroup[korwilName];
+                                    return ` Progres: ${context.raw}% (${g.progressDoc}/${g.total} Dokumen)`;
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
 
