@@ -47,7 +47,7 @@
                         <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
                         Sync Data
                     </button>
-                    <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit?gid=959635293" target="_blank" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm w-full sm:w-auto justify-center">
+                    <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit?gid=1926911386" target="_blank" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm w-full sm:w-auto justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         Update Progress (Excel)
                     </a>
@@ -98,10 +98,9 @@
                 </div>
             </div>
 
-            <!-- Panel Rincian Per Desa (Muncul saat Kecamatan diklik) -->
             <div id="kecamatan-drilldown-container" class="mt-6 pt-6 border-t border-slate-100 hidden">
                 <h3 class="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <span>📍 Rincian Progres Capaian per Desa di Kecamatan Terpilih</span>
+                    <span>📊 Rincian Progres Capaian per Desa di Kecamatan Terpilih</span>
                 </h3>
                 <div id="desa-progress-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
@@ -149,7 +148,7 @@
 
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
             <div class="mb-4">
-                <h3 class="font-bold text-slate-800 text-base">📊 Grafik Komparasi Persentase Capaian Per Korwil</h3>
+                <h3 class="font-bold text-slate-800 text-base">📈 Grafik Komparasi Persentase Capaian Per Korwil</h3>
                 <p class="text-xs text-slate-500">Menampilkan persentase pencapaian kerja akumulatif dari setiap Koordinator Wilayah</p>
             </div>
             <div class="relative h-64 sm:h-80">
@@ -159,7 +158,7 @@
 
         <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
             <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-rose-600">
-                📉 10 PPL Terendah (% Progres)
+                🚨 10 PPL Terendah (% Progres)
             </h3>
             <div id="top-ppl-container" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 divide-y md:divide-y-0 divide-slate-100"></div>
         </div>
@@ -239,7 +238,6 @@
 
     </main>
 
-    <!-- Modal Detail Progress per SLS -->
     <div id="sls-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-slate-500/75 transition-opacity" onclick="closeModal()"></div>
@@ -285,7 +283,8 @@
     </footer>
 
     <script>
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/export?format=csv&gid=959635293';
+        // MEMPERBARUI URL CSV DENGAN GID BARU: 1926911386
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/export?format=csv&gid=1926911386';
         
         let rawData = [];
         let progressChart = null;
@@ -309,7 +308,10 @@
             if (icon) icon.classList.add('animate-spin');
             document.getElementById('loading-state').style.display = 'flex';
 
-            fetch(SHEET_CSV_URL)
+            // Menambahkan timestamp agar browser tidak menyimpan cache
+            const cacheBusterUrl = SHEET_CSV_URL + "&t=" + new Date().getTime();
+
+            fetch(cacheBusterUrl)
                 .then(response => response.text())
                 .then(csvText => {
                     parseCSVData(csvText);
@@ -317,10 +319,11 @@
                 })
                 .catch(err => {
                     console.error("Gagal mengambil data CSV", err);
+                    alert("Gagal memuat data dari Spreadsheet. Pastikan pengaturan share-nya 'Anyone with the link can view'.");
                 });
         }
 
-        // PARSING DISESUAIKAN DENGAN STRUKTUR KOLOM SPREADSHEET BARU
+        // PARSING DISESUAIKAN DENGAN STRUKTUR KOLOM SPREADSHEET (SESUAI GAMBAR)
         function parseCSVData(text) {
             const lines = text.split('\n');
             const parsed = [];
@@ -329,12 +332,18 @@
                 const line = lines[i].trim();
                 if(!line) continue;
                 
+                // Regex pemisahan koma yang menangani nilai di dalam tanda kutip ganda (")
                 const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (cols.length < 14) continue;
                 
+                // Mencegah parsing header "kecamatan" di baris pertama CSV jika terbaca
                 const kecVal = cols[0]?.replace(/"/g, '').trim();
-                if (!kecVal || kecVal === "kecamatan") continue;
+                if (!kecVal || kecVal.toLowerCase() === "kecamatan") continue;
 
+                /* URUTAN INDEKS SESUAI GAMBAR: 
+                   0: kecamatan, 1: desa, 2: kode_sls, 3: korwil, 4: pml, 5: ppl, 
+                   6: total, 7: approved, 8: draft, 9: edited by pengawas, 10: open, 11: reject, 12: revoked, 13: submit
+                */
                 const totalVal = parseInt(cols[6]) || 0;
                 const approveVal = parseInt(cols[7]) || 0;
                 const draftVal = parseInt(cols[8]) || 0;
@@ -389,6 +398,7 @@
 
         function updateDropdown(id, setElements) {
             const select = document.getElementById(id);
+            // Kembalikan ke opsi default
             select.innerHTML = select.options[0].outerHTML;
             Array.from(setElements).sort().forEach(val => {
                 const opt = document.createElement('option');
