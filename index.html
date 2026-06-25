@@ -3,57 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Sensus Ekonomi 2026</title>
+    <title>Executive Dashboard Monitoring SE2026 - Kabupaten Lembata</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen custom-scrollbar">
 
-    <nav class="bg-indigo-900 text-white shadow-md sticky top-0 z-50 px-4 py-3 sm:px-6">
+    <nav class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 sm:px-6">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <div class="p-2 bg-indigo-800 rounded-lg">
-                    <svg class="w-6 h-6 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <div class="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight">MONITORING SE2026</h1>
-                    <p class="text-xs text-indigo-300">Kabupaten Lembata • Real-time Dashboard</p>
+                    <h1 class="text-base font-bold tracking-tight text-white sm:text-lg">MONITORING SE2026</h1>
+                    <p class="text-xs text-slate-400">Kabupaten Lembata • Live Executive Dashboard</p>
                 </div>
             </div>
             <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-end">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs text-indigo-200">Terakhir Sinkronisasi:</p>
-                    <p id="sync-timestamp" class="text-xs font-semibold text-emerald-400">-</p>
+                <div class="text-center sm:text-right">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">Terakhir Sinkronisasi:</p>
+                    <p id="sync-timestamp" class="text-xs font-bold text-emerald-400">-</p>
                 </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <button onclick="fetchData()" class="flex items-center gap-2 bg-indigo-800 hover:bg-indigo-700 active:bg-indigo-950 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm w-full sm:w-auto justify-center">
-                        <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
+                    <button onclick="fetchData()" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-950 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition border border-slate-700 w-full sm:w-auto cursor-pointer">
+                        <svg id="refresh-icon" class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
                         Sync Data
                     </button>
-                    <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit?gid=1926911386" target="_blank" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm w-full sm:w-auto justify-center">
+                    <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit?gid=1926911386" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full sm:w-auto shadow-lg shadow-emerald-600/20">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        Update Progress (Sheets)
+                        Update Excel
                     </a>
-                </div>
-                <div class="text-center sm:hidden w-full border-t border-indigo-800 pt-1">
-                    <p class="text-[10px] text-indigo-300">Sync: <span id="sync-timestamp-mobile" class="font-semibold text-emerald-400">-</span></p>
                 </div>
             </div>
         </div>
@@ -61,112 +48,112 @@
 
     <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
 
-        <div id="loading-state" class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between">
+        <div id="loading-state" class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-xl shadow-md flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div id="loading-spinner" class="animate-spin rounded-full h-5 w-5 border-2 border-indigo-600 border-t-transparent"></div>
-                <p id="loading-text" class="text-sm text-indigo-700 font-medium">Sedang memuat dan menyinkronkan data langsung dari Google Sheets...</p>
+                <div class="animate-spin rounded-full h-5 w-5 border-2 border-indigo-400 border-t-transparent"></div>
+                <p class="text-xs sm:text-sm text-indigo-300 font-medium">Mengunduh data realtime dari G-Sheets databasefix (GID: 1926911386)...</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
-            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                Filter Pemantauan Wilayah & Petugas
+        <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 backdrop-blur-xs shadow-xl">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                Matriks Filter Wilayah & Hierarki Petugas
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Koordinator Wilayah (Korwil)</label>
-                    <select id="filter-korwil" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-indigo-600">
-                        <option value="all">Semua Korwil</option>
-                    </select>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Koordinator Wilayah (Korwil)</label>
+                    <select id="filter-korwil" onchange="applyFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 custom-scrollbar"></select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Pengawas Lapangan (PML)</label>
-                    <select id="filter-pml" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-indigo-600">
-                        <option value="all">Semua PML</option>
-                    </select>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Pengawas Lapangan (PML)</label>
+                    <select id="filter-pml" onchange="applyFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"></select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kecamatan</label>
-                    <select id="filter-kecamatan" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-indigo-600">
-                        <option value="all">Semua Kecamatan</option>
-                    </select>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Kecamatan</label>
+                    <select id="filter-kecamatan" onchange="applyFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"></select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cari Petugas Pencacah (PPL)</label>
-                    <input type="text" id="search-ppl" oninput="applyFilters()" placeholder="Ketik nama PPL..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-indigo-600">
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Cari Petugas Pencacah (PPL)</label>
+                    <input type="text" id="search-ppl" oninput="applyFilters()" placeholder="Masukkan nama PPL..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-slate-500 uppercase">Target</span>
-                <span id="kpi-target" class="text-xl font-bold text-slate-900 mt-2">-</span>
-                <div class="text-[10px] text-slate-400 mt-1">Beban Alokasi</div>
+            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Target Alokasi</span>
+                <span id="kpi-target" class="text-xl font-bold text-white mt-2">-</span>
+                <div class="text-[10px] text-slate-500 mt-1">Total SLS/Blok</div>
             </div>
-            <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-blue-700 uppercase">Open / Belum</span>
-                <span id="kpi-open" class="text-xl font-bold text-blue-900 mt-2">-</span>
-                <div id="pct-open" class="text-[10px] text-blue-600 mt-1 font-medium">-</div>
+            <div class="bg-blue-950/20 p-4 rounded-xl border border-blue-900/40 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Open</span>
+                <span id="kpi-open" class="text-xl font-bold text-blue-300 mt-2">-</span>
+                <div id="pct-open" class="text-[10px] text-blue-400/80 mt-1 font-medium">-</div>
             </div>
-            <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-purple-700 uppercase">Draft</span>
-                <span id="kpi-draft" class="text-xl font-bold text-purple-900 mt-2">-</span>
-                <div id="pct-draft" class="text-[10px] text-purple-600 mt-1 font-medium">-</div>
+            <div class="bg-purple-950/20 p-4 rounded-xl border border-purple-900/40 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-purple-400 uppercase tracking-wider">Draft</span>
+                <span id="kpi-draft" class="text-xl font-bold text-purple-300 mt-2">-</span>
+                <div id="pct-draft" class="text-[10px] text-purple-400/80 mt-1 font-medium">-</div>
             </div>
-            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-amber-700 uppercase">Submitted</span>
-                <span id="kpi-submit" class="text-xl font-bold text-amber-900 mt-2">-</span>
-                <div id="pct-submit" class="text-[10px] text-amber-600 mt-1 font-medium">-</div>
+            <div class="bg-amber-950/20 p-4 rounded-xl border border-amber-900/40 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">Submitted</span>
+                <span id="kpi-submit" class="text-xl font-bold text-amber-300 mt-2">-</span>
+                <div id="pct-submit" class="text-[10px] text-amber-400/80 mt-1 font-medium">-</div>
             </div>
-            <div class="bg-red-50 p-4 rounded-xl border border-red-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-red-700 uppercase">Rejected</span>
-                <span id="kpi-reject" class="text-xl font-bold text-red-900 mt-2">-</span>
-                <div id="pct-reject" class="text-[10px] text-red-600 mt-1 font-medium">-</div>
+            <div class="bg-rose-950/20 p-4 rounded-xl border border-rose-900/40 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Rejected</span>
+                <span id="kpi-reject" class="text-xl font-bold text-rose-300 mt-2">-</span>
+                <div id="pct-reject" class="text-[10px] text-rose-400/80 mt-1 font-medium">-</div>
             </div>
-            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-emerald-700 uppercase">Approved</span>
-                <span id="kpi-approve" class="text-xl font-bold text-emerald-900 mt-2">-</span>
-                <div id="pct-approve" class="text-[10px] text-emerald-600 mt-1 font-medium">-</div>
+            <div class="bg-emerald-950/20 p-4 rounded-xl border border-emerald-900/40 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Approved</span>
+                <span id="kpi-approve" class="text-xl font-bold text-emerald-300 mt-2">-</span>
+                <div id="pct-approve" class="text-[10px] text-emerald-400/80 mt-1 font-medium">-</div>
             </div>
-            <div class="col-span-2 sm:col-span-1 bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-xs flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-indigo-700 uppercase">Progres Kerja</span>
-                <span id="kpi-progress" class="text-xl font-bold text-indigo-900 mt-2">-</span>
-                <div class="w-full bg-indigo-200 rounded-full h-1.5 mt-2 overflow-hidden">
-                    <div id="progress-bar-kpi" class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
+            <div class="col-span-2 sm:col-span-1 bg-indigo-950/40 p-4 rounded-xl border border-indigo-800/40 shadow-md flex flex-col justify-between">
+                <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-wider">Total Progress %</span>
+                <span id="kpi-progress" class="text-xl font-bold text-indigo-300 mt-2">-</span>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
+                    <div id="progress-bar-kpi" class="bg-indigo-500 h-1.5 rounded-full" style="width: 0%"></div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
-            <div class="mb-4">
-                <h3 class="font-bold text-slate-800 text-base">📊 Grafik Komparasi Persentase Capaian Per Korwil</h3>
-                <p class="text-xs text-slate-500">Menampilkan persentase pencapaian kerja akumulatif (Submit + Reject + Approve) dari setiap Koordinator Wilayah</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-1">
+                <div class="mb-3">
+                    <h3 class="font-bold text-rose-400 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <span>📉</span> 10 PPL Perlu Diperhatikan (Progress Terendah)
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Prioritas intervensi pengetatan target pendataan</p>
+                </div>
+                <div id="top-ppl-container" class="divide-y divide-slate-800/60 h-[280px] overflow-y-auto custom-scrollbar pr-1"></div>
             </div>
-            <div class="relative h-64 sm:h-80">
-                <canvas id="korwilPercentageChart"></canvas>
-            </div>
-        </div>
 
-        <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
-            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2 text-rose-600">
-                📉 10 PPL Terendah (% Progres)
-            </h3>
-            <div id="top-ppl-container" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 divide-y md:divide-y-0 divide-slate-100"></div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 border-b border-slate-100 pb-4">
+            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-2">
                 <div>
-                    <h3 class="font-bold text-slate-800 text-base">Ringkasan Progress Total Per Orang (PPL Kumulatif)</h3>
-                    <p class="text-xs text-slate-500">Klik salah satu kotak PPL untuk melihat rincian progress per wilayah / SLS tugas</p>
+                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">📊 Progress Capaian Kerja Per Koordinator Wilayah</h3>
+                    <p class="text-[11px] text-slate-500 mb-3">Persentase dihitung berdasarkan (Submit + Reject + Approve) / Beban Target</p>
+                </div>
+                <div class="relative h-[270px]">
+                    <canvas id="korwilPercentageChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 border-b border-slate-800 pb-4">
+                <div>
+                    <h3 class="font-bold text-slate-200 text-base tracking-wide">👥 Kartu Kontrol Performa Petugas (PPL Kumulatif)</h3>
+                    <p class="text-xs text-slate-500">Klik kartu untuk melihat rincian progres per SLS/Wilayah Tugas</p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <label class="text-xs font-semibold text-slate-600">Urutkan Kotak:</label>
-                    <select id="sort-ppl-summary" onchange="applyFilters()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-medium focus:outline-indigo-600">
-                        <option value="lowest">Progres Terendah</option>
-                        <option value="alphabet">Abjad (A-Z)</option>
+                    <label class="text-xs text-slate-400">Urutan:</label>
+                    <select id="sort-ppl-summary" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
+                        <option value="lowest">Progress Terendah ➔ Tertinggi</option>
+                        <option value="highest">Progress Tertinggi ➔ Terendah</option>
+                        <option value="alphabet">Abjad Nama (A-Z)</option>
                     </select>
                 </div>
             </div>
@@ -174,43 +161,45 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs lg:col-span-2">
+            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-2">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-slate-800 text-base">Grafik Progres Capaian Dokumen Per Desa (Filter Aktif)</h3>
-                    <span class="text-xs text-slate-400">Top 15 Baris</span>
+                    <div>
+                        <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">📈 Detail Capaian Dokumen Berdasarkan Desa</h3>
+                        <p class="text-[11px] text-slate-500">Menampilkan beban sebaran status (Top 15 baris filter aktif)</p>
+                    </div>
                 </div>
-                <div class="relative h-64 sm:h-80">
+                <div class="relative h-72 sm:h-80">
                     <canvas id="progressChart"></canvas>
                 </div>
             </div>
 
-            <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-xs">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-slate-800 text-base">Komposisi Status Dokumen</h3>
-                    <span class="text-xs text-slate-400">Keseluruhan</span>
+            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-1">
+                <div class="mb-4">
+                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">🍩 Komposisi Status Dokumen</h3>
+                    <p class="text-[11px] text-slate-500">Distribusi dokumen agregat makro</p>
                 </div>
-                <div class="relative h-64 sm:h-80 flex items-center justify-center">
+                <div class="relative h-64 flex items-center justify-center">
                     <canvas id="statusPieChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
-            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <div class="bg-slate-950/50 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <div class="p-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h3 class="font-bold text-slate-800 text-base">Tabel Detail Capaian Petugas Lapangan (Per Desa)</h3>
-                    <p class="text-xs text-slate-500">Menampilkan beban kerja rincian per segmentasi Desa/Kelurahan</p>
+                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">📋 Master Rincian SLS (Database Filtered)</h3>
+                    <p class="text-xs text-slate-500">Tabel breakdown tingkat administrasi SLS / Satuan Lingkungan Setempat</p>
                 </div>
-                <span id="table-row-count" class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full">0 Petugas / Tugas</span>
+                <span id="table-row-count" class="bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-semibold px-3 py-1 rounded-full">0 SLS Terpilih</span>
             </div>
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse text-sm">
+                <table class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="bg-slate-100/70 text-slate-600 font-semibold border-b border-slate-200 text-xs uppercase">
+                        <tr class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider">
                             <th class="p-3 pl-4">No</th>
-                            <th class="p-3">Korwil / PML</th>
+                            <th class="p-3">Struktur Pengawas (Korwil / PML)</th>
                             <th class="p-3">Nama PPL</th>
-                            <th class="p-3">Wilayah Tugas</th>
+                            <th class="p-3">Desa & SLS</th>
                             <th class="p-3 text-center">Open</th>
                             <th class="p-3 text-center">Draft</th>
                             <th class="p-3 text-center">Submit</th>
@@ -220,9 +209,9 @@
                             <th class="p-3 pr-4 text-right">Progres %</th>
                         </tr>
                     </thead>
-                    <tbody id="data-table-body" class="divide-y divide-slate-100 text-slate-700">
+                    <tbody id="data-table-body" class="divide-y divide-slate-800 text-slate-300">
                         <tr>
-                            <td colspan="11" class="text-center py-8 text-slate-400">Sedang memproses data...</td>
+                            <td colspan="11" class="text-center py-8 text-slate-500">Sedang memproses & memetakan data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -231,49 +220,48 @@
 
     </main>
 
-    <div id="ppl-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden">
-            <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+    <div id="breakdown-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl max-h-[85vh] flex flex-col shadow-2xl">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50 rounded-t-2xl">
                 <div>
-                    <h3 id="modal-ppl-name" class="font-bold text-slate-900 text-base">-</h3>
-                    <p class="text-xs text-slate-500">Rincian Progress Beban Kerja Per Wilayah / SLS Tugas</p>
+                    <h3 id="modal-ppl-name" class="font-bold text-white text-base">-</h3>
+                    <p id="modal-ppl-hierarchy" class="text-xs text-slate-400 mt-0.5">-</p>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="p-4 overflow-y-auto custom-scrollbar flex-1">
-                <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <div class="overflow-y-auto p-4 custom-scrollbar flex-1 bg-slate-900/50">
+                <table class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="bg-slate-100/70 text-slate-600 font-semibold border-b border-slate-200 text-[10px] uppercase tracking-wider">
-                            <th class="p-2.5 pl-4">Kecamatan</th>
-                            <th class="p-2.5">Desa / Kelurahan</th>
-                            <th class="p-2.5 text-center bg-blue-50/50 text-blue-700">Open</th>
-                            <th class="p-2.5 text-center bg-purple-50/50 text-purple-700">Draft</th>
-                            <th class="p-2.5 text-center bg-amber-50/50 text-amber-700">Submit</th>
-                            <th class="p-2.5 text-center bg-red-50/50 text-red-700">Reject</th>
-                            <th class="p-2.5 text-center bg-emerald-50/50 text-emerald-700">Approve</th>
-                            <th class="p-2.5 text-center font-bold text-slate-700">Total</th>
-                            <th class="p-2.5 pr-4 text-right">Progres</th>
+                        <tr class="bg-slate-950 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider">
+                            <th class="p-2.5">Kecamatan</th>
+                            <th class="p-2.5">Desa/Kelurahan</th>
+                            <th class="p-2.5">Kode & Nama SLS</th>
+                            <th class="p-2.5 text-center">Open</th>
+                            <th class="p-2.5 text-center">Draft</th>
+                            <th class="p-2.5 text-center">Submit</th>
+                            <th class="p-2.5 text-center">Reject</th>
+                            <th class="p-2.5 text-center">Approve</th>
+                            <th class="p-2.5 text-center">Total</th>
+                            <th class="p-2.5 text-right">Progres %</th>
                         </tr>
                     </thead>
-                    <tbody id="modal-table-body" class="divide-y divide-slate-100 text-slate-700">
-                        </tbody>
+                    <tbody id="modal-table-body" class="divide-y divide-slate-800 text-slate-300"></tbody>
                 </table>
             </div>
-            <div class="p-3 bg-slate-50 border-t border-slate-200 text-right">
-                <button onclick="closeModal()" class="bg-slate-200 hover:bg-slate-300 active:bg-slate-400 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-semibold transition">
-                    Tutup
-                </button>
+            <div class="p-3 border-t border-slate-800 bg-slate-950/40 text-right rounded-b-2xl">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-white cursor-pointer">Tutup Window</button>
             </div>
         </div>
     </div>
 
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-400 border-t border-slate-200 mt-12">
-        Dashboard Monitoring Sensus Ekonomi 2026 • Terhubung otomatis ke Google Sheets via live export CSV.
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs text-slate-600 border-t border-slate-800/80 mt-12">
+        Dashboard Eksekutif Sensus Ekonomi 2026 • Terkoneksi GID: 1926911386 • Badan Pusat Statistik Kabupaten Lembata.
     </footer>
 
     <script>
+        // GID 1926911386 direct CSV export injection
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/export?format=csv&gid=1926911386';
         
         let rawData = [];
@@ -289,43 +277,26 @@
             const now = new Date();
             const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WITA';
             const dateString = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-            const fullTimestamp = `${dateString}, ${timeString}`;
-            
-            document.getElementById('sync-timestamp').innerText = fullTimestamp;
-            document.getElementById('sync-timestamp-mobile').innerText = fullTimestamp;
+            document.getElementById('sync-timestamp').innerText = `${dateString}, ${timeString}`;
         }
 
         function fetchData() {
             const icon = document.getElementById('refresh-icon');
             if (icon) icon.classList.add('animate-spin');
-            
-            // Set alert status memuat data yang bersih
-            document.getElementById('loading-state').className = "bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between";
-            document.getElementById('loading-spinner').className = "animate-spin rounded-full h-5 w-5 border-2 border-indigo-600 border-t-transparent";
-            document.getElementById('loading-text').className = "text-sm text-indigo-700 font-medium";
-            document.getElementById('loading-text').innerText = "Sedang memuat dan menyinkronkan data langsung dari Google Sheets...";
             document.getElementById('loading-state').style.display = 'flex';
 
             fetch(SHEET_CSV_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error('Gagal terhubung');
+                    if (!response.ok) throw new Error('Network failure');
                     return response.text();
                 })
                 .then(csvText => {
                     parseCSVData(csvText);
                     updateSyncTime();
-                    document.getElementById('loading-state').style.display = 'none';
-                    if (icon) icon.classList.remove('animate-spin');
                 })
                 .catch(err => {
-                    console.error(err);
-                    if (icon) icon.classList.remove('animate-spin');
-                    
-                    // Jika gagal, ubah banner loading menjadi banner peringatan error yang rapi
-                    document.getElementById('loading-spinner').className = "hidden";
-                    document.getElementById('loading-state').className = "bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between";
-                    document.getElementById('loading-text').className = "text-sm text-amber-800 font-medium";
-                    document.getElementById('loading-text').innerHTML = "⚠️ <b>Gagal memuat pembaruan data otomatis.</b> Pastikan pengaturan spreadsheet Anda telah diatur ke <b>\"Publish to the web\"</b> dengan format <b>Comma-separated values (.csv)</b>.";
+                    console.error("Gagal sinkronisasi data:", err);
+                    alert("Koneksi gagal atau GID Spreadsheet bermasalah. Periksa pengaturan share link G-Sheets Anda.");
                 });
         }
 
@@ -337,9 +308,13 @@
                 const line = lines[i].trim();
                 if(!line) continue;
                 
+                // Parsing safe comma separate values handling double quotes text
                 const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (cols.length < 14) continue;
                 
+                const pplName = cols[3]?.replace(/"/g, '').trim();
+                if (!pplName || pplName === "" || pplName === "Nama PPL" || pplName === "PPL") continue;
+
                 const openVal = parseInt(cols[8]) || 0;
                 const draftVal = parseInt(cols[9]) || 0;
                 const submitVal = parseInt(cols[10]) || 0;
@@ -347,30 +322,28 @@
                 const approveVal = parseInt(cols[12]) || 0;
                 const totalVal = parseInt(cols[13]) || (openVal + draftVal + submitVal + rejectVal + approveVal);
 
-                const pplName = cols[3]?.replace(/"/g, '').trim();
-
-                if (pplName && pplName !== "" && pplName !== "Nama PPL") {
-                    parsed.push({
-                        korwil: cols[1]?.replace(/"/g, '').trim() || "Tanpa Korwil",
-                        pml: cols[2]?.replace(/"/g, '').trim() || "Tanpa PML",
-                        ppl: pplName,
-                        kec: cols[5]?.replace(/"/g, '').trim() || "-",
-                        desa: cols[6]?.replace(/"/g, '').trim() || "-",
-                        open: openVal,
-                        draft: draftVal,
-                        submit: submitVal,
-                        reject: rejectVal,
-                        approve: approveVal,
-                        total: totalVal
-                    });
-                }
+                parsed.push({
+                    korwil: cols[1]?.replace(/"/g, '').trim() || 'No Korwil',
+                    pml: cols[2]?.replace(/"/g, '').trim() || 'No PML',
+                    ppl: pplName,
+                    idSls: cols[4]?.replace(/"/g, '').trim() || '-',
+                    kec: cols[5]?.replace(/"/g, '').trim() || '-',
+                    desa: cols[6]?.replace(/"/g, '').trim() || '-',
+                    namaSls: cols[7]?.replace(/"/g, '').trim() || '-',
+                    open: openVal,
+                    draft: draftVal,
+                    submit: submitVal,
+                    reject: rejectVal,
+                    approve: approveVal,
+                    total: totalVal
+                });
             }
             
             rawData = parsed;
-            initDashboard();
-        }
+            document.getElementById('loading-state').style.display = 'none';
+            const icon = document.getElementById('refresh-icon');
+            if (icon) icon.classList.remove('animate-spin');
 
-        function initDashboard() {
             populateFilterOptions();
             applyFilters();
         }
@@ -386,14 +359,14 @@
                 if(item.kec) kecamatans.add(item.kec);
             });
 
-            updateDropdown('filter-korwil', korwils);
-            updateDropdown('filter-pml', pmls);
-            updateDropdown('filter-kecamatan', kecamatans);
+            updateDropdown('filter-korwil', korwils, 'Semua Korwil');
+            updateDropdown('filter-pml', pmls, 'Semua PML');
+            updateDropdown('filter-kecamatan', kecamatans, 'Semua Kecamatan');
         }
 
-        function updateDropdown(id, setElements) {
+        function updateDropdown(id, setElements, defaultText) {
             const select = document.getElementById(id);
-            select.innerHTML = select.options[0].outerHTML;
+            select.innerHTML = `<option value="all">${defaultText}</option>`;
             Array.from(setElements).sort().forEach(val => {
                 const opt = document.createElement('option');
                 opt.value = val;
@@ -427,16 +400,12 @@
         function renderKPIs(data) {
             let total = 0, open = 0, draft = 0, submit = 0, reject = 0, approve = 0;
             data.forEach(d => {
-                total += d.total;
-                open += d.open;
-                draft += d.draft;
-                submit += d.submit;
-                reject += d.reject;
-                approve += d.approve;
+                total += d.total; open += d.open; draft += d.draft;
+                submit += d.submit; reject += d.reject; approve += d.approve;
             });
 
-            const totalProgressDoc = submit + reject + approve;
-            const pctProgress = total > 0 ? ((totalProgressDoc / total) * 100).toFixed(1) : '0.0';
+            const currentProgress = submit + reject + approve;
+            const pctProgress = total > 0 ? ((currentProgress / total) * 100).toFixed(1) : '0.0';
 
             document.getElementById('kpi-target').innerText = total.toLocaleString('id-ID');
             document.getElementById('kpi-open').innerText = open.toLocaleString('id-ID');
@@ -445,10 +414,10 @@
             document.getElementById('kpi-reject').innerText = reject.toLocaleString('id-ID');
             document.getElementById('kpi-approve').innerText = approve.toLocaleString('id-ID');
 
-            document.getElementById('pct-open').innerText = total > 0 ? `${((open/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-draft').innerText = total > 0 ? `${((draft/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-submit').innerText = total > 0 ? `${((submit/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-reject').innerText = total > 0 ? `${((reject/total)*100).toFixed(1)}% dari total` : '-';
+            document.getElementById('pct-open').innerText = total > 0 ? `${((open/total)*100).toFixed(1)}% target` : '-';
+            document.getElementById('pct-draft').innerText = total > 0 ? `${((draft/total)*100).toFixed(1)}% target` : '-';
+            document.getElementById('pct-submit').innerText = total > 0 ? `${((submit/total)*100).toFixed(1)}% target` : '-';
+            document.getElementById('pct-reject').innerText = total > 0 ? `${((reject/total)*100).toFixed(1)}% target` : '-';
             document.getElementById('pct-approve').innerText = total > 0 ? `${((approve/total)*100).toFixed(1)}% selesai` : '-';
             
             document.getElementById('kpi-progress').innerText = `${pctProgress}%`;
@@ -457,29 +426,26 @@
 
         function renderLeaderboards(data) {
             const pplGroup = {};
-
             data.forEach(item => {
-                if(item.ppl) {
-                    if(!pplGroup[item.ppl]) pplGroup[item.ppl] = { progressDoc: 0, total: 0 };
-                    pplGroup[item.ppl].progressDoc += (item.submit + item.reject + item.approve);
-                    pplGroup[item.ppl].total += item.total;
-                }
+                if(!pplGroup[item.ppl]) pplGroup[item.ppl] = { progressDoc: 0, total: 0 };
+                pplGroup[item.ppl].progressDoc += (item.submit + item.reject + item.approve);
+                pplGroup[item.ppl].total += item.total;
             });
 
             const sortedPPL = Object.keys(pplGroup).map(name => {
                 const g = pplGroup[name];
                 const pct = g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
-                return { name, pct, ...g };
+                return { name, pct };
             }).sort((a, b) => a.pct - b.pct).slice(0, 10);
 
-            const pplContainer = document.getElementById('top-ppl-container');
-            pplContainer.innerHTML = sortedPPL.length === 0 ? '<p class="text-xs text-slate-400 py-2 text-center col-span-2">Tidak ada data</p>' : '';
+            const container = document.getElementById('top-ppl-container');
+            container.innerHTML = sortedPPL.length === 0 ? '<p class="text-xs text-slate-600 py-4 text-center">Tidak ada data</p>' : '';
             
             sortedPPL.forEach((item, idx) => {
-                pplContainer.innerHTML += `
-                    <div class="flex justify-between items-center py-2 text-xs sm:text-sm border-b border-slate-100 last:border-0">
-                        <span class="truncate font-medium text-slate-700 max-w-[75%]"><b>#${idx+1}</b> ${item.name}</span>
-                        <span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded shrink-0">${item.pct}%</span>
+                container.innerHTML += `
+                    <div class="flex justify-between items-center py-2.5 text-xs border-b border-slate-800/40 last:border-0">
+                        <span class="truncate font-medium text-slate-300 max-w-[75%]"><b class="text-rose-500/80 mr-1">#${idx+1}</b> ${item.name}</span>
+                        <span class="font-bold text-rose-400 bg-rose-950/50 border border-rose-900/30 px-2 py-0.5 rounded-lg shrink-0">${item.pct}%</span>
                     </div>`;
             });
         }
@@ -487,7 +453,6 @@
         function renderKorwilPercentageChart(data) {
             const korwilGroup = {};
             data.forEach(item => {
-                if(!item.korwil) return;
                 if(!korwilGroup[item.korwil]) korwilGroup[item.korwil] = { progressDoc: 0, total: 0 };
                 korwilGroup[item.korwil].progressDoc += (item.submit + item.reject + item.approve);
                 korwilGroup[item.korwil].total += item.total;
@@ -507,34 +472,28 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Persentase Progres (%)',
                         data: percentages,
-                        backgroundColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                        borderColor: '#6366f1',
+                        borderWidth: 1,
                         borderRadius: 6,
-                        maxBarThickness: 50
+                        maxBarThickness: 40
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { callback: value => value + '%' }
-                        },
-                        x: {
-                            ticks: { font: { size: 10, weight: '600' } }
-                        }
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8', callback: v => v + '%' }, grid: { color: '#1e293b' } },
+                        x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } }
                     },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const korwilName = context.label;
-                                    const g = korwilGroup[korwilName];
-                                    return ` Progres: ${context.raw}% (${g.progressDoc}/${g.total} Dokumen)`;
+                                    const g = korwilGroup[context.label];
+                                    return ` Progres: ${context.raw}% (${g.progressDoc}/${g.total} SLS)`;
                                 }
                             }
                         }
@@ -544,8 +503,8 @@
         }
 
         function renderPPLSummary(data) {
-            const summaryContainer = document.getElementById('ppl-summary-container');
-            summaryContainer.innerHTML = '';
+            const container = document.getElementById('ppl-summary-container');
+            container.innerHTML = '';
 
             const pplSummary = {};
             data.forEach(item => {
@@ -562,37 +521,25 @@
                 pplSummary[item.ppl].approve += item.approve;
                 pplSummary[item.ppl].total += item.total;
                 
-                if (item.desa && !pplSummary[item.ppl].desaList.includes(item.desa)) {
-                    pplSummary[item.ppl].desaList.push(item.desa);
-                }
-                if (item.pml && !pplSummary[item.ppl].pmlList.includes(item.pml)) {
-                    pplSummary[item.ppl].pmlList.push(item.pml);
-                }
-                if (item.korwil && !pplSummary[item.ppl].korwilList.includes(item.korwil)) {
-                    pplSummary[item.ppl].korwilList.push(item.korwil);
-                }
+                if (item.desa && !pplSummary[item.ppl].desaList.includes(item.desa)) pplSummary[item.ppl].desaList.push(item.desa);
+                if (item.pml && !pplSummary[item.ppl].pmlList.includes(item.pml)) pplSummary[item.ppl].pmlList.push(item.pml);
+                if (item.korwil && !pplSummary[item.ppl].korwilList.includes(item.korwil)) pplSummary[item.ppl].korwilList.push(item.korwil);
             });
 
             const sortMethod = document.getElementById('sort-ppl-summary').value;
             const keys = Object.keys(pplSummary);
 
             if(keys.length === 0) {
-                summaryContainer.innerHTML = `<p class="col-span-full text-center text-sm text-slate-400 py-4">Tidak ada data petugas</p>`;
+                container.innerHTML = `<p class="col-span-full text-center text-xs text-slate-500 py-6">Tidak menemukan kecocokan petugas</p>`;
                 return;
             }
 
             keys.sort((a, b) => {
-                if (sortMethod === 'alphabet') {
-                    return a.localeCompare(b);
-                } else {
-                    const groupA = pplSummary[a];
-                    const pctA = groupA.total > 0 ? ((groupA.submit + groupA.reject + groupA.approve) / groupA.total) : 0;
-                    
-                    const groupB = pplSummary[b];
-                    const pctB = groupB.total > 0 ? ((groupB.submit + groupB.reject + groupB.approve) / groupB.total) : 0;
-                    
-                    return pctA - pctB || a.localeCompare(b);
-                }
+                const pctA = pplSummary[a].total > 0 ? ((pplSummary[a].submit + pplSummary[a].reject + pplSummary[a].approve) / pplSummary[a].total) : 0;
+                const pctB = pplSummary[b].total > 0 ? ((pplSummary[b].submit + pplSummary[b].reject + pplSummary[b].approve) / pplSummary[b].total) : 0;
+                
+                if (sortMethod === 'alphabet') return a.localeCompare(b);
+                return sortMethod === 'lowest' ? pctA - pctB : pctB - pctA;
             });
 
             keys.forEach(pplName => {
@@ -600,131 +547,85 @@
                 const progressDoc = group.submit + group.reject + group.approve;
                 const pct = group.total > 0 ? ((progressDoc / group.total) * 100).toFixed(1) : '0.0';
                 
-                let colorClass = 'bg-white border-slate-200 hover:border-indigo-400';
-                let progressColor = 'bg-slate-400';
-                if (parseFloat(pct) >= 75) { colorClass = 'bg-emerald-50/30 border-emerald-200 hover:border-emerald-400'; progressColor = 'bg-emerald-600'; }
-                else if (parseFloat(pct) > 0) { colorClass = 'bg-amber-50/30 border-amber-200 hover:border-amber-400'; progressColor = 'bg-amber-500'; }
+                let borderStyle = 'border-slate-800 bg-slate-950/30';
+                let progressColor = 'bg-indigo-500';
+                if (parseFloat(pct) >= 85) { borderStyle = 'border-emerald-500/30 bg-emerald-950/10'; progressColor = 'bg-emerald-500'; }
+                else if (parseFloat(pct) < 40 && group.total > 0) { borderStyle = 'border-rose-500/30 bg-rose-950/10'; progressColor = 'bg-rose-500'; }
 
-                const displayKorwil = group.korwilList.length > 0 ? group.korwilList.join(', ') : '-';
-                const displayPML = group.pmlList.length > 0 ? group.pmlList.join(', ') : '-';
-
-                summaryContainer.innerHTML += `
-                    <div onclick="showPPLDetail('${pplName.replace(/'/g, "\\'")}')" class="p-4 rounded-xl border ${colorClass} shadow-xs flex flex-col justify-between space-y-3 cursor-pointer transition transform hover:-translate-y-0.5 active:scale-98">
+                container.innerHTML += `
+                    <div onclick="openBreakdown('${pplName}')" class="p-4 rounded-xl border ${borderStyle} hover:border-indigo-500/60 transition-all shadow-md flex flex-col justify-between space-y-3 cursor-pointer group">
                         <div>
                             <div class="flex justify-between items-start gap-2">
-                                <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate max-w-[75%]">${pplName}</h4>
-                                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 shrink-0">${pct}%</span>
+                                <h4 class="font-bold text-white text-xs sm:text-sm truncate group-hover:text-indigo-400 transition-colors">${pplName}</h4>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 shrink-0">${pct}%</span>
                             </div>
-                            <div class="mt-1.5 space-y-0.5 border-b border-slate-100/70 pb-2">
-                                <p class="text-[10px] text-slate-500 truncate"><b>Korwil:</b> ${displayKorwil}</p>
-                                <p class="text-[10px] text-slate-500 truncate"><b>PML:</b> ${displayPML}</p>
+                            <div class="mt-2 space-y-0.5 border-b border-slate-800/60 pb-2 text-[10px]">
+                                <p class="text-slate-400 truncate"><b>Korwil:</b> ${group.korwilList.join(', ')}</p>
+                                <p class="text-slate-400 truncate"><b>PML:</b> ${group.pmlList.join(', ')}</p>
                             </div>
-                            <p class="text-[10px] text-slate-400 truncate mt-1.5"><b>Wilayah:</b> ${group.desaList.join(', ')}</p>
+                            <p class="text-[10px] text-indigo-300/80 truncate mt-2"><b>Wilayah:</b> ${group.desaList.join(', ')}</p>
                         </div>
-                        <div class="grid grid-cols-5 text-center text-[10px] gap-1 bg-slate-100/50 p-1.5 rounded-lg text-slate-600 font-medium">
-                            <div><div class="text-blue-600">${group.open}</div>Op</div>
-                            <div><div class="text-purple-600">${group.draft}</div>Dr</div>
-                            <div><div class="text-amber-600">${group.submit}</div>Sub</div>
-                            <div><div class="text-red-500">${group.reject}</div>Rej</div>
-                            <div><div class="text-emerald-600">${group.approve}</div>App</div>
+                        <div class="grid grid-cols-5 text-center text-[10px] gap-1 bg-slate-900/60 p-2 rounded-lg font-medium text-slate-400">
+                            <div><div class="text-blue-400">${group.open}</div>Op</div>
+                            <div><div class="text-purple-400">${group.draft}</div>Dr</div>
+                            <div><div class="text-amber-400">${group.submit}</div>Sub</div>
+                            <div><div class="text-rose-400">${group.reject}</div>Rej</div>
+                            <div><div class="text-emerald-400">${group.approve}</div>App</div>
                         </div>
                         <div class="space-y-1">
-                            <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                            <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
                                 <div class="${progressColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
                             </div>
-                            <div class="text-[9px] text-right text-slate-400">Prog: <b>${progressDoc}</b> / Total: <b>${group.total}</b></div>
+                            <div class="text-[9px] text-right text-slate-500">Beban Progress: <b>${progressDoc}</b> / <b>${group.total}</b> SLS</div>
                         </div>
                     </div>`;
             });
         }
 
-        function showPPLDetail(pplName) {
-            document.getElementById('modal-ppl-name').innerText = pplName;
-            const modalTableBody = document.getElementById('modal-table-body');
-            modalTableBody.innerHTML = '';
-
-            const pplSlslData = rawData.filter(item => item.ppl === pplName);
-
-            pplSlslData.forEach(item => {
-                const progressDoc = item.submit + item.reject + item.approve;
-                const pct = item.total > 0 ? ((progressDoc / item.total) * 100).toFixed(1) : '0.0';
-
-                let badgeColor = 'bg-slate-100 text-slate-700';
-                if(parseFloat(pct) >= 75) badgeColor = 'bg-emerald-100 text-emerald-800 font-semibold';
-                else if(parseFloat(pct) > 0) badgeColor = 'bg-amber-100 text-amber-800';
-
-                modalTableBody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-2.5 pl-4 font-medium text-slate-700">${item.kec}</td>
-                        <td class="p-2.5 font-semibold text-slate-900">${item.desa}</td>
-                        <td class="p-2.5 text-center text-blue-600 font-medium bg-blue-50/20">${item.open}</td>
-                        <td class="p-2.5 text-center text-purple-600 font-medium bg-purple-50/20">${item.draft}</td>
-                        <td class="p-2.5 text-center text-amber-600 font-medium bg-amber-50/20">${item.submit}</td>
-                        <td class="p-2.5 text-center text-red-500 bg-red-50/20">${item.reject}</td>
-                        <td class="p-2.5 text-center text-emerald-600 font-bold bg-emerald-50/20">${item.approve}</td>
-                        <td class="p-2.5 text-center font-bold text-slate-600 bg-slate-50/50">${item.total}</td>
-                        <td class="p-2.5 pr-4 text-right">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs ${badgeColor}">${pct}%</span>
-                        </td>
-                    </tr>`;
-            });
-
-            document.getElementById('ppl-modal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('ppl-modal').classList.add('hidden');
-        }
-
         function renderCharts(data) {
-            const chartData = data.slice(0, 15);
-            const labels = chartData.map(d => {
-                const shortPpl = d.ppl.length > 10 ? d.ppl.substring(0, 10) + '..' : d.ppl;
-                return `${shortPpl} (${d.desa})`;
+            // Grouping performance data by unique Villages
+            const desaMap = {};
+            data.forEach(d => {
+                if(!desaMap[d.desa]) desaMap[d.desa] = { open:0, draft:0, submit:0, reject:0, approve:0 };
+                desaMap[d.desa].open += d.open;
+                desaMap[d.desa].draft += d.draft;
+                desaMap[d.desa].submit += d.submit;
+                desaMap[d.desa].reject += d.reject;
+                desaMap[d.desa].approve += d.approve;
             });
+
+            const topDesaKeys = Object.keys(desaMap).slice(0, 15);
             
-            const openDataset = chartData.map(d => d.open);
-            const draftDataset = chartData.map(d => d.draft);
-            const submitDataset = chartData.map(d => d.submit);
-            const rejectDataset = chartData.map(d => d.reject);
-            const approveDataset = chartData.map(d => d.approve);
-
             if (progressChart) progressChart.destroy();
-
             const ctx = document.getElementById('progressChart').getContext('2d');
             progressChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: topDesaKeys,
                     datasets: [
-                        { label: 'Approved', data: approveDataset, backgroundColor: '#10b981' },
-                        { label: 'Submitted', data: submitDataset, backgroundColor: '#f59e0b' },
-                        { label: 'Rejected', data: rejectDataset, backgroundColor: '#ef4444' },
-                        { label: 'Draft', data: draftDataset, backgroundColor: '#a855f7' },
-                        { label: 'Open / Belum', data: openDataset, backgroundColor: '#3b82f6' }
+                        { label: 'Approved', data: topDesaKeys.map(k => desaMap[k].approve), backgroundColor: '#10b981' },
+                        { label: 'Submitted', data: topDesaKeys.map(k => desaMap[k].submit), backgroundColor: '#f59e0b' },
+                        { label: 'Rejected', data: topDesaKeys.map(k => desaMap[k].reject), backgroundColor: '#ef4444' },
+                        { label: 'Draft', data: topDesaKeys.map(k => desaMap[k].draft), backgroundColor: '#a855f7' },
+                        { label: 'Open', data: topDesaKeys.map(k => desaMap[k].open), backgroundColor: '#3b82f6' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { stacked: true, ticks: { font: { size: 9 } } },
-                        y: { stacked: true }
+                        x: { stacked: true, ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } },
+                        y: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                        legend: { position: 'bottom', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 9 } } }
                     }
                 }
             });
 
-            let totalOpen = 0, totalDraft = 0, totalSubmit = 0, totalReject = 0, totalApprove = 0;
-            data.forEach(d => {
-                totalOpen += d.open;
-                totalDraft += d.draft;
-                totalSubmit += d.submit;
-                totalReject += d.reject;
-                totalApprove += d.approve;
-            });
+            // Macro status composite doughnut
+            let o=0, dr=0, s=0, r=0, a=0;
+            data.forEach(d => { o+=d.open; dr+=d.draft; s+=d.submit; r+=d.reject; a+=d.approve; });
 
             if (statusPieChart) statusPieChart.destroy();
             const ctxPie = document.getElementById('statusPieChart').getContext('2d');
@@ -733,15 +634,17 @@
                 data: {
                     labels: ['Open', 'Draft', 'Submitted', 'Rejected', 'Approved'],
                     datasets: [{
-                        data: [totalOpen, totalDraft, totalSubmit, totalReject, totalApprove],
-                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#10b981']
+                        data: [o, dr, s, r, a],
+                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#10b981'],
+                        borderWidth: 2,
+                        borderColor: '#0f172a'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
                     }
                 }
             });
@@ -749,45 +652,86 @@
 
         function renderTable(data) {
             const tbody = document.getElementById('data-table-body');
-            document.getElementById('table-row-count').innerText = `${data.length} Petugas / Tugas`;
+            document.getElementById('table-row-count').innerText = `${data.length} SLS Terpilih`;
             
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">Tidak ada data tugas pencacah yang cocok dengan filter</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-500">Tidak ada rincian data pencacahan SLS yang sesuai filter.</td></tr>`;
                 return;
             }
 
             let html = '';
             data.forEach((item, index) => {
-                const progressDoc = item.submit + item.reject + item.approve;
-                const pct = item.total > 0 ? ((progressDoc / item.total) * 100).toFixed(1) : '0.0';
+                const currentProg = item.submit + item.reject + item.approve;
+                const pct = item.total > 0 ? ((currentProg / item.total) * 100).toFixed(1) : '0.0';
                 
-                let badgeClass = 'bg-slate-100 text-slate-700';
-                if (parseFloat(pct) >= 75) badgeClass = 'bg-emerald-100 text-emerald-800 font-semibold';
-                else if (parseFloat(pct) > 0) badgeClass = 'bg-amber-100 text-amber-800';
+                let badgeClass = 'bg-slate-800 text-slate-400';
+                if (parseFloat(pct) >= 85) badgeClass = 'bg-emerald-950 text-emerald-400 border border-emerald-800/50 font-semibold';
+                else if (parseFloat(pct) < 40 && item.total > 0) badgeClass = 'bg-rose-950 text-rose-400 border border-rose-800/50';
 
-                html += `<tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-3 pl-4 font-medium text-slate-400 text-xs">${index + 1}</td>
+                html += `<tr class="hover:bg-slate-900/60 transition-colors border-b border-slate-800/40">
+                    <td class="p-3 pl-4 font-semibold text-slate-600">${index + 1}</td>
                     <td class="p-3">
-                        <div class="font-semibold text-slate-900 text-xs">${item.korwil}</div>
-                        <div class="text-[10px] text-slate-400">PML: ${item.pml}</div>
+                        <div class="font-bold text-slate-200">${item.korwil}</div>
+                        <div class="text-[10px] text-slate-500">PML: ${item.pml}</div>
                     </td>
-                    <td class="p-3 font-medium text-slate-800 text-xs">${item.ppl}</td>
-                    <td class="p-3 text-xs">
-                        <div class="text-slate-700">${item.kec}</div>
-                        <div class="text-[10px] text-slate-400 font-medium">${item.desa}</div>
+                    <td class="p-3 font-medium text-slate-300">${item.ppl}</td>
+                    <td class="p-3">
+                        <div class="text-slate-300 font-semibold">${item.desa}</div>
+                        <div class="text-[10px] text-indigo-400 font-medium">${item.idSls} - ${item.namaSls}</div>
                     </td>
-                    <td class="p-3 text-center text-blue-600 font-medium text-xs">${item.open}</td>
-                    <td class="p-3 text-center text-purple-600 font-medium text-xs">${item.draft}</td>
-                    <td class="p-3 text-center text-amber-600 font-medium text-xs">${item.submit}</td>
-                    <td class="p-3 text-center text-red-500 text-xs">${item.reject}</td>
-                    <td class="p-3 text-center text-emerald-600 font-bold text-xs">${item.approve}</td>
-                    <td class="p-3 text-center font-semibold text-slate-600 text-xs">${item.total}</td>
+                    <td class="p-3 text-center text-blue-400 font-medium">${item.open}</td>
+                    <td class="p-3 text-center text-purple-400 font-medium">${item.draft}</td>
+                    <td class="p-3 text-center text-amber-400 font-medium">${item.submit}</td>
+                    <td class="p-3 text-center text-rose-400">${item.reject}</td>
+                    <td class="p-3 text-center text-emerald-400 font-bold">${item.approve}</td>
+                    <td class="p-3 text-center font-semibold text-slate-500">${item.total}</td>
                     <td class="p-3 pr-4 text-right">
-                        <span class="inline-block px-2 py-0.5 rounded text-xs ${badgeClass}">${pct}%</span>
+                        <span class="inline-block px-2 py-0.5 rounded-md text-[11px] ${badgeClass}">${pct}%</span>
                     </td>
                 </tr>`;
             });
             tbody.innerHTML = html;
+        }
+
+        // POPUP BREAKDOWN CONTROLLER SYSTEM
+        function openBreakdown(pplName) {
+            const matches = rawData.filter(d => d.ppl === pplName);
+            if(matches.length === 0) return;
+
+            document.getElementById('modal-ppl-name').innerText = `Breakdown Penugasan: ${pplName}`;
+            document.getElementById('modal-ppl-hierarchy').innerText = `Korwil: ${matches[0].korwil}  |  PML: ${matches[0].pml}`;
+
+            const mBody = document.getElementById('modal-table-body');
+            mBody.innerHTML = '';
+
+            matches.forEach(item => {
+                const prog = item.submit + item.reject + item.approve;
+                const pct = item.total > 0 ? ((prog / item.total) * 100).toFixed(1) : '0.0';
+
+                let badge = 'text-slate-400';
+                if(parseFloat(pct) >= 85) badge = 'text-emerald-400 font-bold';
+                else if(parseFloat(pct) < 40 && item.total > 0) badge = 'text-rose-400 font-bold';
+
+                mBody.innerHTML += `
+                    <tr class="border-b border-slate-800 hover:bg-slate-800/40">
+                        <td class="p-2.5 text-slate-300">${item.kec}</td>
+                        <td class="p-2.5 text-slate-300 font-semibold">${item.desa}</td>
+                        <td class="p-2.5 text-slate-400"><span class="text-indigo-400 font-mono">${item.idSls}</span> - ${item.namaSls}</td>
+                        <td class="p-2.5 text-center text-blue-400">${item.open}</td>
+                        <td class="p-2.5 text-center text-purple-400">${item.draft}</td>
+                        <td class="p-2.5 text-center text-amber-400">${item.submit}</td>
+                        <td class="p-2.5 text-center text-rose-400">${item.reject}</td>
+                        <td class="p-2.5 text-center text-emerald-400 font-medium">${item.approve}</td>
+                        <td class="p-2.5 text-center text-slate-500">${item.total}</td>
+                        <td class="p-2.5 text-right font-medium ${badge}">${pct}%</td>
+                    </tr>`;
+            });
+
+            document.getElementById('breakdown-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('breakdown-modal').classList.add('hidden');
         }
     </script>
 </body>
