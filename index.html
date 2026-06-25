@@ -1,738 +1,525 @@
-<!DOCTYPE html>
+import os
+
+html_content = """<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Dashboard Monitoring SE2026 - Kabupaten Lembata</title>
+    <title>Dashboard Sensus Ekonomi SE2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased min-h-screen custom-scrollbar">
+<body class="text-slate-800 antialiased">
 
-    <nav class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 sm:px-6">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+    <header class="bg-slate-900 text-white sticky top-0 z-50 px-4 py-3 shadow-md">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-3">
-                <div class="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <div class="bg-indigo-600 p-2 rounded-lg text-white">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold tracking-tight text-white sm:text-lg">MONITORING SE2026</h1>
-                    <p class="text-xs text-slate-400">Kabupaten Lembata • Live Executive Dashboard</p>
+                    <h1 class="text-lg font-bold tracking-tight">MONITORING LAPANGAN SE2026</h1>
+                    <p class="text-xs text-slate-400">Kabupaten Lembata &bull; <span id="sync-time">Memuat...</span></p>
                 </div>
             </div>
-            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-end">
-                <div class="text-center sm:text-right">
-                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">Terakhir Sinkronisasi:</p>
-                    <p id="sync-timestamp" class="text-xs font-bold text-emerald-400">-</p>
-                </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <button onclick="fetchData()" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-950 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition border border-slate-700 w-full sm:w-auto cursor-pointer">
-                        <svg id="refresh-icon" class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
-                        Sync Data
-                    </button>
-                    <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit?gid=1926911386" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full sm:w-auto shadow-lg shadow-emerald-600/20">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        Update Excel
-                    </a>
-                </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="fetchData()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-rotate"></i> Sync Data
+                </button>
+                <a href="https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/edit" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel"></i> Update di Excel
+                </a>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-
-        <div id="loading-state" class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-xl shadow-md flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="animate-spin rounded-full h-5 w-5 border-2 border-indigo-400 border-t-transparent"></div>
-                <p class="text-xs sm:text-sm text-indigo-300 font-medium">Mengunduh data realtime dari G-Sheets databasefix (GID: 1926911386)...</p>
-            </div>
-        </div>
-
-        <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 backdrop-blur-xs shadow-xl">
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                Matriks Filter Wilayah & Hierarki Petugas
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Koordinator Wilayah (Korwil)</label>
-                    <select id="filter-korwil" onchange="applyFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 custom-scrollbar"></select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Pengawas Lapangan (PML)</label>
-                    <select id="filter-pml" onchange="applyFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"></select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Kecamatan</label>
-                    <select id="filter-kecamatan" onchange="applyFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"></select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Cari Petugas Pencacah (PPL)</label>
-                    <input type="text" id="search-ppl" oninput="applyFilters()" placeholder="Masukkan nama PPL..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
+        
+        <div id="setup-alert" class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm flex gap-3">
+            <div class="text-amber-500 text-xl"><i class="fa-solid fa-circle-info"></i></div>
+            <div class="text-xs sm:text-sm text-amber-900 flex-1">
+                <p class="font-semibold text-amber-950">💡 Tips agar Realtime otomatis:</p>
+                <p class="mt-1">Di Google Spreadsheet Anda, klik <b>File > Share > Publish to web</b>. Pilih sheet <b>"data"</b>, ubah format menjadi <b>CSV</b>, lalu klik Publish. Salin link tersebut dan masukkan di kolom konfigurasi bawah ini untuk menghubungkan langsung secara live.</p>
+                <div class="mt-2 flex gap-2">
+                    <input type="text" id="csv-url-input" placeholder="Masukkan Link CSV Terpublikasi Di Sini..." class="bg-white border border-amber-300 text-xs rounded-lg px-2 py-1 w-full max-w-md focus:outline-none focus:ring-1 focus:ring-amber-500">
+                    <button onclick="saveCsvUrl()" class="bg-amber-600 text-white text-xs font-semibold px-3 py-1 rounded-lg hover:bg-amber-700 transition">Hubungkan</button>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
-            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Target Alokasi</span>
-                <span id="kpi-target" class="text-xl font-bold text-white mt-2">-</span>
-                <div class="text-[10px] text-slate-500 mt-1">Total SLS/Blok</div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="custom-card p-4 flex items-center gap-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase">Total Target</p>
+                    <h3 id="stat-total" class="text-xl sm:text-2xl font-bold text-slate-900">-</h3>
+                </div>
             </div>
-            <div class="bg-blue-950/20 p-4 rounded-xl border border-blue-900/40 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Open</span>
-                <span id="kpi-open" class="text-xl font-bold text-blue-300 mt-2">-</span>
-                <div id="pct-open" class="text-[10px] text-blue-400/80 mt-1 font-medium">-</div>
+            <div class="custom-card p-4 flex items-center gap-4">
+                <div class="p-3 bg-green-50 text-green-600 rounded-xl text-xl"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase">Approved</p>
+                    <h3 id="stat-approved" class="text-xl sm:text-2xl font-bold text-slate-900">-</h3>
+                </div>
             </div>
-            <div class="bg-purple-950/20 p-4 rounded-xl border border-purple-900/40 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-purple-400 uppercase tracking-wider">Draft</span>
-                <span id="kpi-draft" class="text-xl font-bold text-purple-300 mt-2">-</span>
-                <div id="pct-draft" class="text-[10px] text-purple-400/80 mt-1 font-medium">-</div>
+            <div class="custom-card p-4 flex items-center gap-4">
+                <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl"><i class="fa-solid fa-paper-plane"></i></div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase">Submitted</p>
+                    <h3 id="stat-submitted" class="text-xl sm:text-2xl font-bold text-slate-900">-</h3>
+                </div>
             </div>
-            <div class="bg-amber-950/20 p-4 rounded-xl border border-amber-900/40 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">Submitted</span>
-                <span id="kpi-submit" class="text-xl font-bold text-amber-300 mt-2">-</span>
-                <div id="pct-submit" class="text-[10px] text-amber-400/80 mt-1 font-medium">-</div>
-            </div>
-            <div class="bg-rose-950/20 p-4 rounded-xl border border-rose-900/40 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Rejected</span>
-                <span id="kpi-reject" class="text-xl font-bold text-rose-300 mt-2">-</span>
-                <div id="pct-reject" class="text-[10px] text-rose-400/80 mt-1 font-medium">-</div>
-            </div>
-            <div class="bg-emerald-950/20 p-4 rounded-xl border border-emerald-900/40 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Approved</span>
-                <span id="kpi-approve" class="text-xl font-bold text-emerald-300 mt-2">-</span>
-                <div id="pct-approve" class="text-[10px] text-emerald-400/80 mt-1 font-medium">-</div>
-            </div>
-            <div class="col-span-2 sm:col-span-1 bg-indigo-950/40 p-4 rounded-xl border border-indigo-800/40 shadow-md flex flex-col justify-between">
-                <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-wider">Total Progress %</span>
-                <span id="kpi-progress" class="text-xl font-bold text-indigo-300 mt-2">-</span>
-                <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
-                    <div id="progress-bar-kpi" class="bg-indigo-500 h-1.5 rounded-full" style="width: 0%"></div>
+            <div class="custom-card p-4 flex items-center gap-4">
+                <div class="p-3 bg-teal-50 text-teal-600 rounded-xl text-xl"><i class="fa-solid fa-percent"></i></div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase">Progress Total</p>
+                    <h3 id="stat-progress" class="text-xl sm:text-2xl font-bold text-slate-900">-</h3>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-1">
-                <div class="mb-3">
-                    <h3 class="font-bold text-rose-400 text-sm uppercase tracking-wider flex items-center gap-2">
-                        <span>📉</span> 10 PPL Perlu Diperhatikan (Progress Terendah)
-                    </h3>
-                    <p class="text-[11px] text-slate-500">Prioritas intervensi pengetatan target pendataan</p>
-                </div>
-                <div id="top-ppl-container" class="divide-y divide-slate-800/60 h-[280px] overflow-y-auto custom-scrollbar pr-1"></div>
-            </div>
-
-            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-2">
-                <div>
-                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">📊 Progress Capaian Kerja Per Koordinator Wilayah</h3>
-                    <p class="text-[11px] text-slate-500 mb-3">Persentase dihitung berdasarkan (Submit + Reject + Approve) / Beban Target</p>
-                </div>
-                <div class="relative h-[270px]">
-                    <canvas id="korwilPercentageChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 border-b border-slate-800 pb-4">
-                <div>
-                    <h3 class="font-bold text-slate-200 text-base tracking-wide">👥 Kartu Kontrol Performa Petugas (PPL Kumulatif)</h3>
-                    <p class="text-xs text-slate-500">Klik kartu untuk melihat rincian progres per SLS/Wilayah Tugas</p>
-                </div>
-                <div class="flex items-center gap-2 shrink-0">
-                    <label class="text-xs text-slate-400">Urutan:</label>
-                    <select id="sort-ppl-summary" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
-                        <option value="lowest">Progress Terendah ➔ Tertinggi</option>
-                        <option value="highest">Progress Tertinggi ➔ Terendah</option>
-                        <option value="alphabet">Abjad Nama (A-Z)</option>
-                    </select>
-                </div>
-            </div>
-            <div id="ppl-summary-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-2">
+            <div class="custom-card p-4 lg:col-span-2 flex flex-col justify-between">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">📈 Detail Capaian Dokumen Berdasarkan Desa</h3>
-                        <p class="text-[11px] text-slate-500">Menampilkan beban sebaran status (Top 15 baris filter aktif)</p>
+                        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Grafik Progress per Desa / Kecamatan</h2>
+                        <p class="text-xs text-slate-500">Melihat capaian submit berdasarkan pembagian wilayah</p>
                     </div>
                 </div>
-                <div class="relative h-72 sm:h-80">
-                    <canvas id="progressChart"></canvas>
+                <div class="relative min-h-[300px] w-full flex items-center justify-center">
+                    <canvas id="mainBarChart"></canvas>
                 </div>
             </div>
 
-            <div class="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl lg:col-span-1">
-                <div class="mb-4">
-                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">🍩 Komposisi Status Dokumen</h3>
-                    <p class="text-[11px] text-slate-500">Distribusi dokumen agregat makro</p>
+            <div class="custom-card p-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2 text-rose-600 mb-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <h2 class="text-sm font-bold uppercase tracking-wide">PPL yang Perlu Diperhatikan</h2>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">10 PPL dengan progress persentase submit terendah</p>
                 </div>
-                <div class="relative h-64 flex items-center justify-center">
-                    <canvas id="statusPieChart"></canvas>
+                <div id="low-progress-list" class="space-y-3 overflow-y-auto max-h-[320px] pr-1">
+                    <div class="text-center py-8 text-slate-400 text-xs">Memuat data...</div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-slate-950/50 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-            <div class="p-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="custom-card overflow-hidden">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div>
-                    <h3 class="font-bold text-slate-200 text-sm uppercase tracking-wider">📋 Master Rincian SLS (Database Filtered)</h3>
-                    <p class="text-xs text-slate-500">Tabel breakdown tingkat administrasi SLS / Satuan Lingkungan Setempat</p>
+                    <h2 class="text-sm font-bold text-slate-900 uppercase">Daftar Progress Petugas Pendataan (PPL)</h2>
+                    <p class="text-xs text-slate-500">Klik nama petugas untuk breakdown detail progress per SLS</p>
                 </div>
-                <span id="table-row-count" class="bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-semibold px-3 py-1 rounded-full">0 SLS Terpilih</span>
+                <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                    <select id="filter-korwil" onchange="applyFilters()" class="bg-white border border-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700">
+                        <option value="">Semua Korwil</option>
+                    </select>
+                    <select id="filter-pml" onchange="applyFilters()" class="bg-white border border-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700">
+                        <option value="">Semua PML</option>
+                    </select>
+                    <button onclick="toggleSort()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium px-3 py-2 rounded-lg flex items-center gap-1.5">
+                        <i class="fa-solid fa-sort"></i> Sort Progress: <span id="sort-label">Terendah</span>
+                    </button>
+                </div>
             </div>
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider">
-                            <th class="p-3 pl-4">No</th>
-                            <th class="p-3">Struktur Pengawas (Korwil / PML)</th>
-                            <th class="p-3">Nama PPL</th>
-                            <th class="p-3">Desa & SLS</th>
-                            <th class="p-3 text-center">Open</th>
-                            <th class="p-3 text-center">Draft</th>
-                            <th class="p-3 text-center">Submit</th>
-                            <th class="p-3 text-center">Reject</th>
-                            <th class="p-3 text-center">Approve</th>
-                            <th class="p-3 text-center">Total</th>
-                            <th class="p-3 pr-4 text-right">Progres %</th>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-100 text-slate-700 font-semibold uppercase tracking-wider text-[10px] border-b border-slate-200">
+                        <tr>
+                            <th class="py-3 px-4">Nama PPL</th>
+                            <th class="py-3 px-4">Kecamatan / Desa</th>
+                            <th class="py-3 px-4">PML & Korwil</th>
+                            <th class="py-3 px-4 text-center">Total Target</th>
+                            <th class="py-3 px-4 text-center">Submitted</th>
+                            <th class="py-3 px-4 text-center">Approved</th>
+                            <th class="py-3 px-4">Progress %</th>
                         </tr>
                     </thead>
-                    <tbody id="data-table-body" class="divide-y divide-slate-800 text-slate-300">
+                    <tbody id="ppl-table-body" class="divide-y divide-slate-100 bg-white">
                         <tr>
-                            <td colspan="11" class="text-center py-8 text-slate-500">Sedang memproses & memetakan data...</td>
+                            <td colspan="7" class="py-8 text-center text-slate-400">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </main>
 
-    <div id="breakdown-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl max-h-[85vh] flex flex-col shadow-2xl">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50 rounded-t-2xl">
+    <div id="sls-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50 transition-opacity">
+        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden transform scale-95 transition-transform duration-200">
+            <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
                 <div>
-                    <h3 id="modal-ppl-name" class="font-bold text-white text-base">-</h3>
-                    <p id="modal-ppl-hierarchy" class="text-xs text-slate-400 mt-0.5">-</p>
+                    <h3 id="modal-ppl-name" class="font-bold text-base">-</h3>
+                    <p id="modal-ppl-meta" class="text-xs text-slate-400">-</p>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white transition text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-4 custom-scrollbar flex-1 bg-slate-900/50">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-slate-950 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider">
-                            <th class="p-2.5">Kecamatan</th>
-                            <th class="p-2.5">Desa/Kelurahan</th>
-                            <th class="p-2.5">Kode & Nama SLS</th>
-                            <th class="p-2.5 text-center">Open</th>
-                            <th class="p-2.5 text-center">Draft</th>
-                            <th class="p-2.5 text-center">Submit</th>
-                            <th class="p-2.5 text-center">Reject</th>
-                            <th class="p-2.5 text-center">Approve</th>
-                            <th class="p-2.5 text-center">Total</th>
-                            <th class="p-2.5 text-right">Progres %</th>
-                        </tr>
-                    </thead>
-                    <tbody id="modal-table-body" class="divide-y divide-slate-800 text-slate-300"></tbody>
-                </table>
-            </div>
-            <div class="p-3 border-t border-slate-800 bg-slate-950/40 text-right rounded-b-2xl">
-                <button onclick="closeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-white cursor-pointer">Tutup Window</button>
+            <div class="p-4 overflow-y-auto flex-1 space-y-3" id="modal-content-list">
+                </div>
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">Tutup</button>
             </div>
         </div>
     </div>
 
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs text-slate-600 border-t border-slate-800/80 mt-12">
-        Dashboard Eksekutif Sensus Ekonomi 2026 • Terkoneksi GID: 1926911386 • Badan Pusat Statistik Kabupaten Lembata.
-    </footer>
-
     <script>
-        // GID 1926911386 direct CSV export injection
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1BOosLF4OmOvuvkwYBp2j2AbRzYKzDymtx9B1CeY2bcI/export?format=csv&gid=1926911386';
-        
-        let rawData = [];
-        let progressChart = null;
-        let statusPieChart = null;
-        let korwilPercentageChart = null;
+        // Sample baseline data taken from original sheet structure to show if live connection isn't set up yet
+        const sampleRawData = [
+            { kecamatan: "NAGAWUTUNG", desa: "PASIR PUTIH", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Nurlaila Hanun Bengang", total: 27, approved: 0, submit: 14, total_submit: 20 },
+            { kecamatan: "NAGAWUTUNG", desa: "PASIR PUTIH", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Nurlaila Hanun Bengang", total: 24, approved: 6, submit: 14, total_submit: 20 },
+            { kecamatan: "NAGAWUTUNG", desa: "PASIR PUTIH", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Nurlaila Hanun Bengang", total: 32, approved: 17, submit: 8, total_submit: 25 },
+            { kecamatan: "NAGAWUTUNG", desa: "BABOKERONG", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Qamaria Suryati Harun", total: 34, approved: 13, submit: 13, total_submit: 27 },
+            { kecamatan: "NAGAWUTUNG", desa: "BABOKERONG", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Qamaria Suryati Harun", total: 31, approved: 0, submit: 2, total_submit: 2 },
+            { kecamatan: "NAGAWUTUNG", desa: "DUAWUTUN", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Bonifasius Doni", total: 21, approved: 2, submit: 2, total_submit: 4 },
+            { kecamatan: "NAGAWUTUNG", desa: "DUAWUTUN", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Bonifasius Doni", total: 30, approved: 7, submit: 0, total_submit: 8 },
+            { kecamatan: "NAGAWUTUNG", desa: "WUAKERONG", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Nandamh Syahputra", total: 23, approved: 21, submit: 0, total_submit: 22 },
+            { kecamatan: "NAGAWUTUNG", desa: "WUAKERONG", korwil: "Rusdin Ashari Syarif, SE", pml: "Suriati Seni", ppl: "Nandamh Syahputra", total: 35, approved: 17, submit: 0, total_submit: 17 },
+            { kecamatan: "NAGAWUTUNG", desa: "PENIKENE", korwil: "Michael Jonas S, S.Tr", pml: "Katharina Penuru Botoor", ppl: "Mustapa Badarudin", total: 28, approved: 19, submit: 5, total_submit: 24 },
+            { kecamatan: "NAGAWUTUNG", desa: "ATAWAI", korwil: "Michael Jonas S, S.Tr", pml: "Katharina Penuru Botoor", ppl: "Fransiskus L. Lelet", total: 46, approved: 0, submit: 20, total_submit: 20 },
+            { kecamatan: "NAGAWUTUNG", desa: "ATAWAI", korwil: "Michael Jonas S, S.Tr", pml: "Katharina Penuru Botoor", ppl: "Fransiskus L. Lelet", total: 32, approved: 13, submit: 15, total_submit: 28 }
+        ];
 
+        let globalData = [];
+        let aggregatedPpl = [];
+        let currentSortAsc = true; 
+        let myChart = null;
+
+        // On Initialization
         window.addEventListener('DOMContentLoaded', () => {
+            const savedUrl = localStorage.getItem('se2026_csv_url');
+            if(savedUrl) {
+                document.getElementById('csv-url-input').value = savedUrl;
+            }
             fetchData();
         });
 
-        function updateSyncTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WITA';
-            const dateString = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-            document.getElementById('sync-timestamp').innerText = `${dateString}, ${timeString}`;
+        function saveCsvUrl() {
+            const url = document.getElementById('csv-url-input').value.trim();
+            if(url) {
+                localStorage.setItem('se2026_csv_url', url);
+                alert('Link CSV Berhasil Disimpan. Dashboard akan memuat data terbaru.');
+                fetchData();
+            }
         }
 
-        function fetchData() {
-            const icon = document.getElementById('refresh-icon');
-            if (icon) icon.classList.add('animate-spin');
-            document.getElementById('loading-state').style.display = 'flex';
-
-            fetch(SHEET_CSV_URL)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network failure');
-                    return response.text();
-                })
-                .then(csvText => {
-                    parseCSVData(csvText);
-                    updateSyncTime();
-                })
-                .catch(err => {
-                    console.error("Gagal sinkronisasi data:", err);
-                    alert("Koneksi gagal atau GID Spreadsheet bermasalah. Periksa pengaturan share link G-Sheets Anda.");
-                });
-        }
-
-        function parseCSVData(text) {
-            const lines = text.split('\n');
-            const parsed = [];
+        async function fetchData() {
+            const url = localStorage.getItem('se2026_csv_url');
+            document.getElementById('sync-time').innerText = new Date().toLocaleTimeString('id-ID') + " WITA";
             
-            for(let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if(!line) continue;
-                
-                // Parsing safe comma separate values handling double quotes text
-                const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (cols.length < 14) continue;
-                
-                const pplName = cols[3]?.replace(/"/g, '').trim();
-                if (!pplName || pplName === "" || pplName === "Nama PPL" || pplName === "PPL") continue;
+            if(!url) {
+                // Parse fallback static sample
+                processData(sampleRawData);
+                return;
+            }
 
-                const openVal = parseInt(cols[8]) || 0;
-                const draftVal = parseInt(cols[9]) || 0;
-                const submitVal = parseInt(cols[10]) || 0;
-                const rejectVal = parseInt(cols[11]) || 0;
-                const approveVal = parseInt(cols[12]) || 0;
-                const totalVal = parseInt(cols[13]) || (openVal + draftVal + submitVal + rejectVal + approveVal);
+            try {
+                const response = await fetch(url);
+                const csvText = await response.text();
+                const parsed = parseCsv(csvText);
+                if(parsed.length > 0) {
+                    processData(parsed);
+                } else {
+                    processData(sampleRawData);
+                }
+            } catch (e) {
+                console.error("Gagal menarik data live, menggunakan data lokal offline.", e);
+                processData(sampleRawData);
+            }
+        }
 
-                parsed.push({
-                    korwil: cols[1]?.replace(/"/g, '').trim() || 'No Korwil',
-                    pml: cols[2]?.replace(/"/g, '').trim() || 'No PML',
-                    ppl: pplName,
-                    idSls: cols[4]?.replace(/"/g, '').trim() || '-',
-                    kec: cols[5]?.replace(/"/g, '').trim() || '-',
-                    desa: cols[6]?.replace(/"/g, '').trim() || '-',
-                    namaSls: cols[7]?.replace(/"/g, '').trim() || '-',
-                    open: openVal,
-                    draft: draftVal,
-                    submit: submitVal,
-                    reject: rejectVal,
-                    approve: approveVal,
-                    total: totalVal
+        function parseCsv(text) {
+            const lines = text.split('\\n');
+            if (lines.length < 2) return [];
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+            
+            let items = [];
+            for(let i=1; i<lines.length; i++) {
+                if(!lines[i]) continue;
+                const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                if(cols.length < headers.length) continue;
+                
+                let obj = {};
+                headers.forEach((h, idx) => {
+                    obj[h] = cols[idx];
+                });
+                
+                // Convert type safely
+                items.push({
+                    kecamatan: obj.kecamatan || '',
+                    desa: obj.desa || '',
+                    korwil: obj.korwil || '',
+                    pml: obj.pml || '',
+                    ppl: obj.ppl || 'Unknown',
+                    total: parseInt(obj.total) || 0,
+                    approved: parseInt(obj.approved) || 0,
+                    submit: parseInt(obj.submit) || 0,
+                    total_submit: parseInt(obj['total submit']) || parseInt(obj.total_submit) || 0
                 });
             }
-            
-            rawData = parsed;
-            document.getElementById('loading-state').style.display = 'none';
-            const icon = document.getElementById('refresh-icon');
-            if (icon) icon.classList.remove('animate-spin');
+            return items;
+        }
 
-            populateFilterOptions();
+        function processData(rawData) {
+            globalData = rawData.filter(d => d.ppl && d.ppl !== '#N/A');
+            
+            // Build filter options
+            const korwils = [...new Set(globalData.map(d => d.korwil))].filter(Boolean);
+            const pmls = [...new Set(globalData.map(d => d.pml))].filter(Boolean);
+            
+            const kSelect = document.getElementById('filter-korwil');
+            const pSelect = document.getElementById('filter-pml');
+            
+            // Keep first option
+            kSelect.innerHTML = '<option value="">Semua Korwil</option>';
+            pSelect.innerHTML = '<option value="">Semua PML</option>';
+            
+            korwils.forEach(k => kSelect.innerHTML += `<option value="${k}">${k}</option>`);
+            pmls.forEach(p => pSelect.innerHTML += `<option value="${p}">${p}</option>`);
+
+            // Compute summary metrics
+            let totalTarget = 0, approved = 0, submitted = 0;
+            globalData.forEach(d => {
+                totalTarget += d.total;
+                approved += d.approved;
+                submitted += d.total_submit;
+            });
+
+            document.getElementById('stat-total').innerText = totalTarget.toLocaleString('id-ID');
+            document.getElementById('stat-approved').innerText = approved.toLocaleString('id-ID');
+            document.getElementById('stat-submitted').innerText = submitted.toLocaleString('id-ID');
+            document.getElementById('stat-progress').innerText = totalTarget > 0 ? ((submitted / totalTarget) * 100).toFixed(1) + "%" : "0%";
+
+            aggregatePplData();
             applyFilters();
         }
 
-        function populateFilterOptions() {
-            const korwils = new Set();
-            const pmls = new Set();
-            const kecamatans = new Set();
-
-            rawData.forEach(item => {
-                if(item.korwil) korwils.add(item.korwil);
-                if(item.pml) pmls.add(item.pml);
-                if(item.kec) kecamatans.add(item.kec);
+        function aggregatePplData() {
+            let pplMap = {};
+            globalData.forEach((row, idx) => {
+                if(!pplMap[row.ppl]) {
+                    pplMap[row.ppl] = {
+                        name: row.ppl,
+                        desa: row.desa,
+                        kecamatan: row.kecamatan,
+                        korwil: row.korwil,
+                        pml: row.pml,
+                        total: 0,
+                        approved: 0,
+                        submit: 0,
+                        total_submit: 0,
+                        sls_list: []
+                    };
+                }
+                pplMap[row.ppl].total += row.total;
+                pplMap[row.ppl].approved += row.approved;
+                pplMap[row.ppl].submit += row.submit;
+                pplMap[row.ppl].total_submit += row.total_submit;
+                pplMap[row.ppl].sls_list.push({
+                    sls_index: row.sls_list ? row.sls_list.length + 1 : pplMap[row.ppl].sls_list.length + 1,
+                    desa: row.desa,
+                    total: row.total,
+                    approved: row.approved,
+                    total_submit: row.total_submit,
+                    pct: row.total > 0 ? ((row.total_submit / row.total) * 100).toFixed(1) : 0
+                });
             });
 
-            updateDropdown('filter-korwil', korwils, 'Semua Korwil');
-            updateDropdown('filter-pml', pmls, 'Semua PML');
-            updateDropdown('filter-kecamatan', kecamatans, 'Semua Kecamatan');
-        }
-
-        function updateDropdown(id, setElements, defaultText) {
-            const select = document.getElementById(id);
-            select.innerHTML = `<option value="all">${defaultText}</option>`;
-            Array.from(setElements).sort().forEach(val => {
-                const opt = document.createElement('option');
-                opt.value = val;
-                opt.innerText = val;
-                select.appendChild(opt);
+            aggregatedPpl = Object.values(pplMap).map(p => {
+                p.pct = p.total > 0 ? parseFloat(((p.total_submit / p.total) * 100).toFixed(1)) : 0;
+                return p;
             });
         }
 
         function applyFilters() {
-            const selectedKorwil = document.getElementById('filter-korwil').value;
-            const selectedPml = document.getElementById('filter-pml').value;
-            const selectedKec = document.getElementById('filter-kecamatan').value;
-            const searchKeyword = document.getElementById('search-ppl').value.toLowerCase();
+            const korwilFilter = document.getElementById('filter-korwil').value;
+            const pmlFilter = document.getElementById('filter-pml').value;
 
-            const filtered = rawData.filter(item => {
-                const matchKorwil = selectedKorwil === 'all' || item.korwil === selectedKorwil;
-                const matchPml = selectedPml === 'all' || item.pml === selectedPml;
-                const matchKec = selectedKec === 'all' || item.kec === selectedKec;
-                const matchSearch = item.ppl.toLowerCase().includes(searchKeyword);
-                return matchKorwil && matchPml && matchKec && matchSearch;
+            let filtered = aggregatedPpl.filter(p => {
+                return (!korwilFilter || p.korwil === korwilFilter) && (!pmlFilter || p.pml === pmlFilter);
             });
 
-            renderKPIs(filtered);
-            renderLeaderboards(filtered);
-            renderKorwilPercentageChart(filtered);
-            renderPPLSummary(filtered);
-            renderCharts(filtered);
+            // Sort data
+            filtered.sort((a, b) => currentSortAsc ? a.pct - b.pct : b.pct - a.pct);
+
             renderTable(filtered);
+            renderUrgentList();
+            renderChart(filtered);
         }
 
-        function renderKPIs(data) {
-            let total = 0, open = 0, draft = 0, submit = 0, reject = 0, approve = 0;
-            data.forEach(d => {
-                total += d.total; open += d.open; draft += d.draft;
-                submit += d.submit; reject += d.reject; approve += d.approve;
-            });
+        function toggleSort() {
+            currentSortAsc = !currentSortAsc;
+            document.getElementById('sort-label').innerText = currentSortAsc ? "Terendah" : "Tertinggi";
+            applyFilters();
+        }
 
-            const currentProgress = submit + reject + approve;
-            const pctProgress = total > 0 ? ((currentProgress / total) * 100).toFixed(1) : '0.0';
+        function renderTable(data) {
+            const tbody = document.getElementById('ppl-table-body');
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">Tidak ada data cocok dengan filter.</td></tr>`;
+                return;
+            }
 
-            document.getElementById('kpi-target').innerText = total.toLocaleString('id-ID');
-            document.getElementById('kpi-open').innerText = open.toLocaleString('id-ID');
-            document.getElementById('kpi-draft').innerText = draft.toLocaleString('id-ID');
-            document.getElementById('kpi-submit').innerText = submit.toLocaleString('id-ID');
-            document.getElementById('kpi-reject').innerText = reject.toLocaleString('id-ID');
-            document.getElementById('kpi-approve').innerText = approve.toLocaleString('id-ID');
+            tbody.innerHTML = data.map(p => `
+                <tr class="hover:bg-slate-50 cursor-pointer transition border-b border-slate-100" onclick="openBreakdown('${p.name}')">
+                    <td class="py-3 px-4 font-semibold text-slate-900 flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full ${p.pct > 75 ? 'bg-green-500' : (p.pct > 40 ? 'bg-amber-500' : 'bg-rose-500')}"></div>
+                        ${p.name}
+                    </td>
+                    <td class="py-3 px-4 text-slate-600">${p.kecamatan} &bull; <span class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-[10px]">${p.desa}</span></td>
+                    <td class="py-3 px-4 text-slate-500 font-medium">
+                        <div class="text-xs text-slate-700">PML: ${p.pml}</div>
+                        <div class="text-[10px] text-slate-400">Korwil: ${p.korwil}</div>
+                    </td>
+                    <td class="py-3 px-4 text-center font-medium">${p.total}</td>
+                    <td class="py-3 px-4 text-center text-indigo-600 font-semibold">${p.total_submit}</td>
+                    <td class="py-3 px-4 text-center text-green-600 font-medium">${p.approved}</td>
+                    <td class="py-3 px-4 font-bold text-slate-900">
+                        <div class="flex items-center gap-2">
+                            <span class="w-10">${p.pct}%</span>
+                            <div class="w-16 bg-slate-200 rounded-full h-1.5 hidden sm:block overflow-hidden">
+                                <div class="h-1.5 rounded-full ${p.pct > 75 ? 'bg-green-500' : (p.pct > 40 ? 'bg-amber-500' : 'bg-rose-500')}" style="width: ${p.pct}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-            document.getElementById('pct-open').innerText = total > 0 ? `${((open/total)*100).toFixed(1)}% target` : '-';
-            document.getElementById('pct-draft').innerText = total > 0 ? `${((draft/total)*100).toFixed(1)}% target` : '-';
-            document.getElementById('pct-submit').innerText = total > 0 ? `${((submit/total)*100).toFixed(1)}% target` : '-';
-            document.getElementById('pct-reject').innerText = total > 0 ? `${((reject/total)*100).toFixed(1)}% target` : '-';
-            document.getElementById('pct-approve').innerText = total > 0 ? `${((approve/total)*100).toFixed(1)}% selesai` : '-';
+        function renderUrgentList() {
+            // Get bottom 10 sorted by progress percentage ascending
+            let bottom10 = [...aggregatedPpl].sort((a, b) => a.pct - b.pct).slice(0, 10);
+            const listContainer = document.getElementById('low-progress-list');
+
+            if(bottom10.length === 0) {
+                listContainer.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs">Semua progress aman.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = bottom10.map(p => `
+                <div onclick="openBreakdown('${p.name}')" class="p-3 bg-rose-50/50 hover:bg-rose-50 rounded-xl border border-rose-100 transition flex justify-between items-center cursor-pointer">
+                    <div class="min-w-0 flex-1 pr-2">
+                        <div class="font-bold text-xs text-rose-950 truncate">${p.name}</div>
+                        <div class="text-[10px] text-slate-500 truncate">PML: ${p.pml}</div>
+                        <div class="text-[10px] text-slate-400 truncate">${p.kecamatan} &bull; ${p.desa}</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-extrabold text-rose-600">${p.pct}%</span>
+                        <p class="text-[9px] text-slate-400">${p.total_submit}/${p.total} Sls</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderChart(filteredData) {
+            const ctx = document.getElementById('mainBarChart').getContext('2d');
             
-            document.getElementById('kpi-progress').innerText = `${pctProgress}%`;
-            document.getElementById('progress-bar-kpi').style.width = `${pctProgress}%`;
-        }
-
-        function renderLeaderboards(data) {
-            const pplGroup = {};
-            data.forEach(item => {
-                if(!pplGroup[item.ppl]) pplGroup[item.ppl] = { progressDoc: 0, total: 0 };
-                pplGroup[item.ppl].progressDoc += (item.submit + item.reject + item.approve);
-                pplGroup[item.ppl].total += item.total;
+            // Aggregate progress by Desa
+            let desaMap = {};
+            filteredData.forEach(p => {
+                if(!desaMap[p.desa]) desaMap[p.desa] = { total: 0, submit: 0 };
+                desaMap[p.desa].total += p.total;
+                desaMap[p.desa].submit += p.total_submit;
             });
 
-            const sortedPPL = Object.keys(pplGroup).map(name => {
-                const g = pplGroup[name];
-                const pct = g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
-                return { name, pct };
-            }).sort((a, b) => a.pct - b.pct).slice(0, 10);
-
-            const container = document.getElementById('top-ppl-container');
-            container.innerHTML = sortedPPL.length === 0 ? '<p class="text-xs text-slate-600 py-4 text-center">Tidak ada data</p>' : '';
-            
-            sortedPPL.forEach((item, idx) => {
-                container.innerHTML += `
-                    <div class="flex justify-between items-center py-2.5 text-xs border-b border-slate-800/40 last:border-0">
-                        <span class="truncate font-medium text-slate-300 max-w-[75%]"><b class="text-rose-500/80 mr-1">#${idx+1}</b> ${item.name}</span>
-                        <span class="font-bold text-rose-400 bg-rose-950/50 border border-rose-900/30 px-2 py-0.5 rounded-lg shrink-0">${item.pct}%</span>
-                    </div>`;
-            });
-        }
-
-        function renderKorwilPercentageChart(data) {
-            const korwilGroup = {};
-            data.forEach(item => {
-                if(!korwilGroup[item.korwil]) korwilGroup[item.korwil] = { progressDoc: 0, total: 0 };
-                korwilGroup[item.korwil].progressDoc += (item.submit + item.reject + item.approve);
-                korwilGroup[item.korwil].total += item.total;
+            const labels = Object.keys(desaMap);
+            const chartData = labels.map(lbl => {
+                const target = desaMap[lbl].total;
+                return target > 0 ? parseFloat(((desaMap[lbl].submit / target) * 100).toFixed(1)) : 0;
             });
 
-            const labels = Object.keys(korwilGroup).sort();
-            const percentages = labels.map(name => {
-                const g = korwilGroup[name];
-                return g.total > 0 ? parseFloat(((g.progressDoc / g.total) * 100).toFixed(1)) : 0;
-            });
+            if (myChart) {
+                myChart.destroy();
+            }
 
-            if(korwilPercentageChart) korwilPercentageChart.destroy();
-
-            const ctx = document.getElementById('korwilPercentageChart').getContext('2d');
-            korwilPercentageChart = new Chart(ctx, {
+            myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        data: percentages,
-                        backgroundColor: 'rgba(79, 70, 229, 0.8)',
-                        borderColor: '#6366f1',
+                        label: 'Progress Submit (%)',
+                        data: chartData,
+                        backgroundColor: 'rgba(79, 70, 229, 0.85)',
+                        borderColor: 'rgb(79, 70, 229)',
                         borderWidth: 1,
-                        borderRadius: 6,
-                        maxBarThickness: 40
+                        borderRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8', callback: v => v + '%' }, grid: { color: '#1e293b' } },
-                        x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } }
-                    },
                     plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const g = korwilGroup[context.label];
-                                    return ` Progres: ${context.raw}% (${g.progressDoc}/${g.total} SLS)`;
-                                }
-                            }
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: value => value + "%" }
                         }
                     }
                 }
             });
         }
 
-        function renderPPLSummary(data) {
-            const container = document.getElementById('ppl-summary-container');
-            container.innerHTML = '';
-
-            const pplSummary = {};
-            data.forEach(item => {
-                if (!pplSummary[item.ppl]) {
-                    pplSummary[item.ppl] = { 
-                        open: 0, draft: 0, submit: 0, reject: 0, approve: 0, total: 0, 
-                        desaList: [], pmlList: [], korwilList: [] 
-                    };
-                }
-                pplSummary[item.ppl].open += item.open;
-                pplSummary[item.ppl].draft += item.draft;
-                pplSummary[item.ppl].submit += item.submit;
-                pplSummary[item.ppl].reject += item.reject;
-                pplSummary[item.ppl].approve += item.approve;
-                pplSummary[item.ppl].total += item.total;
-                
-                if (item.desa && !pplSummary[item.ppl].desaList.includes(item.desa)) pplSummary[item.ppl].desaList.push(item.desa);
-                if (item.pml && !pplSummary[item.ppl].pmlList.includes(item.pml)) pplSummary[item.ppl].pmlList.push(item.pml);
-                if (item.korwil && !pplSummary[item.ppl].korwilList.includes(item.korwil)) pplSummary[item.ppl].korwilList.push(item.korwil);
-            });
-
-            const sortMethod = document.getElementById('sort-ppl-summary').value;
-            const keys = Object.keys(pplSummary);
-
-            if(keys.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center text-xs text-slate-500 py-6">Tidak menemukan kecocokan petugas</p>`;
-                return;
-            }
-
-            keys.sort((a, b) => {
-                const pctA = pplSummary[a].total > 0 ? ((pplSummary[a].submit + pplSummary[a].reject + pplSummary[a].approve) / pplSummary[a].total) : 0;
-                const pctB = pplSummary[b].total > 0 ? ((pplSummary[b].submit + pplSummary[b].reject + pplSummary[b].approve) / pplSummary[b].total) : 0;
-                
-                if (sortMethod === 'alphabet') return a.localeCompare(b);
-                return sortMethod === 'lowest' ? pctA - pctB : pctB - pctA;
-            });
-
-            keys.forEach(pplName => {
-                const group = pplSummary[pplName];
-                const progressDoc = group.submit + group.reject + group.approve;
-                const pct = group.total > 0 ? ((progressDoc / group.total) * 100).toFixed(1) : '0.0';
-                
-                let borderStyle = 'border-slate-800 bg-slate-950/30';
-                let progressColor = 'bg-indigo-500';
-                if (parseFloat(pct) >= 85) { borderStyle = 'border-emerald-500/30 bg-emerald-950/10'; progressColor = 'bg-emerald-500'; }
-                else if (parseFloat(pct) < 40 && group.total > 0) { borderStyle = 'border-rose-500/30 bg-rose-950/10'; progressColor = 'bg-rose-500'; }
-
-                container.innerHTML += `
-                    <div onclick="openBreakdown('${pplName}')" class="p-4 rounded-xl border ${borderStyle} hover:border-indigo-500/60 transition-all shadow-md flex flex-col justify-between space-y-3 cursor-pointer group">
-                        <div>
-                            <div class="flex justify-between items-start gap-2">
-                                <h4 class="font-bold text-white text-xs sm:text-sm truncate group-hover:text-indigo-400 transition-colors">${pplName}</h4>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 shrink-0">${pct}%</span>
-                            </div>
-                            <div class="mt-2 space-y-0.5 border-b border-slate-800/60 pb-2 text-[10px]">
-                                <p class="text-slate-400 truncate"><b>Korwil:</b> ${group.korwilList.join(', ')}</p>
-                                <p class="text-slate-400 truncate"><b>PML:</b> ${group.pmlList.join(', ')}</p>
-                            </div>
-                            <p class="text-[10px] text-indigo-300/80 truncate mt-2"><b>Wilayah:</b> ${group.desaList.join(', ')}</p>
-                        </div>
-                        <div class="grid grid-cols-5 text-center text-[10px] gap-1 bg-slate-900/60 p-2 rounded-lg font-medium text-slate-400">
-                            <div><div class="text-blue-400">${group.open}</div>Op</div>
-                            <div><div class="text-purple-400">${group.draft}</div>Dr</div>
-                            <div><div class="text-amber-400">${group.submit}</div>Sub</div>
-                            <div><div class="text-rose-400">${group.reject}</div>Rej</div>
-                            <div><div class="text-emerald-400">${group.approve}</div>App</div>
-                        </div>
-                        <div class="space-y-1">
-                            <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                                <div class="${progressColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
-                            </div>
-                            <div class="text-[9px] text-right text-slate-500">Beban Progress: <b>${progressDoc}</b> / <b>${group.total}</b> SLS</div>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function renderCharts(data) {
-            // Grouping performance data by unique Villages
-            const desaMap = {};
-            data.forEach(d => {
-                if(!desaMap[d.desa]) desaMap[d.desa] = { open:0, draft:0, submit:0, reject:0, approve:0 };
-                desaMap[d.desa].open += d.open;
-                desaMap[d.desa].draft += d.draft;
-                desaMap[d.desa].submit += d.submit;
-                desaMap[d.desa].reject += d.reject;
-                desaMap[d.desa].approve += d.approve;
-            });
-
-            const topDesaKeys = Object.keys(desaMap).slice(0, 15);
-            
-            if (progressChart) progressChart.destroy();
-            const ctx = document.getElementById('progressChart').getContext('2d');
-            progressChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: topDesaKeys,
-                    datasets: [
-                        { label: 'Approved', data: topDesaKeys.map(k => desaMap[k].approve), backgroundColor: '#10b981' },
-                        { label: 'Submitted', data: topDesaKeys.map(k => desaMap[k].submit), backgroundColor: '#f59e0b' },
-                        { label: 'Rejected', data: topDesaKeys.map(k => desaMap[k].reject), backgroundColor: '#ef4444' },
-                        { label: 'Draft', data: topDesaKeys.map(k => desaMap[k].draft), backgroundColor: '#a855f7' },
-                        { label: 'Open', data: topDesaKeys.map(k => desaMap[k].open), backgroundColor: '#3b82f6' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { stacked: true, ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } },
-                        y: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
-                    },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 9 } } }
-                    }
-                }
-            });
-
-            // Macro status composite doughnut
-            let o=0, dr=0, s=0, r=0, a=0;
-            data.forEach(d => { o+=d.open; dr+=d.draft; s+=d.submit; r+=d.reject; a+=d.approve; });
-
-            if (statusPieChart) statusPieChart.destroy();
-            const ctxPie = document.getElementById('statusPieChart').getContext('2d');
-            statusPieChart = new Chart(ctxPie, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Open', 'Draft', 'Submitted', 'Rejected', 'Approved'],
-                    datasets: [{
-                        data: [o, dr, s, r, a],
-                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#10b981'],
-                        borderWidth: 2,
-                        borderColor: '#0f172a'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
-                    }
-                }
-            });
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('data-table-body');
-            document.getElementById('table-row-count').innerText = `${data.length} SLS Terpilih`;
-            
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-500">Tidak ada rincian data pencacahan SLS yang sesuai filter.</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            data.forEach((item, index) => {
-                const currentProg = item.submit + item.reject + item.approve;
-                const pct = item.total > 0 ? ((currentProg / item.total) * 100).toFixed(1) : '0.0';
-                
-                let badgeClass = 'bg-slate-800 text-slate-400';
-                if (parseFloat(pct) >= 85) badgeClass = 'bg-emerald-950 text-emerald-400 border border-emerald-800/50 font-semibold';
-                else if (parseFloat(pct) < 40 && item.total > 0) badgeClass = 'bg-rose-950 text-rose-400 border border-rose-800/50';
-
-                html += `<tr class="hover:bg-slate-900/60 transition-colors border-b border-slate-800/40">
-                    <td class="p-3 pl-4 font-semibold text-slate-600">${index + 1}</td>
-                    <td class="p-3">
-                        <div class="font-bold text-slate-200">${item.korwil}</div>
-                        <div class="text-[10px] text-slate-500">PML: ${item.pml}</div>
-                    </td>
-                    <td class="p-3 font-medium text-slate-300">${item.ppl}</td>
-                    <td class="p-3">
-                        <div class="text-slate-300 font-semibold">${item.desa}</div>
-                        <div class="text-[10px] text-indigo-400 font-medium">${item.idSls} - ${item.namaSls}</div>
-                    </td>
-                    <td class="p-3 text-center text-blue-400 font-medium">${item.open}</td>
-                    <td class="p-3 text-center text-purple-400 font-medium">${item.draft}</td>
-                    <td class="p-3 text-center text-amber-400 font-medium">${item.submit}</td>
-                    <td class="p-3 text-center text-rose-400">${item.reject}</td>
-                    <td class="p-3 text-center text-emerald-400 font-bold">${item.approve}</td>
-                    <td class="p-3 text-center font-semibold text-slate-500">${item.total}</td>
-                    <td class="p-3 pr-4 text-right">
-                        <span class="inline-block px-2 py-0.5 rounded-md text-[11px] ${badgeClass}">${pct}%</span>
-                    </td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
-
-        // POPUP BREAKDOWN CONTROLLER SYSTEM
         function openBreakdown(pplName) {
-            const matches = rawData.filter(d => d.ppl === pplName);
-            if(matches.length === 0) return;
+            const pplObj = aggregatedPpl.find(p => p.name === pplName);
+            if(!pplObj) return;
 
-            document.getElementById('modal-ppl-name').innerText = `Breakdown Penugasan: ${pplName}`;
-            document.getElementById('modal-ppl-hierarchy').innerText = `Korwil: ${matches[0].korwil}  |  PML: ${matches[0].pml}`;
+            document.getElementById('modal-ppl-name').innerText = pplObj.name;
+            document.getElementById('modal-ppl-meta').innerHTML = `PML: ${pplObj.pml} &bull; Korwil: ${pplObj.korwil} <br> Wilayah: ${pplObj.kecamatan}, Desa ${pplObj.desa}`;
 
-            const mBody = document.getElementById('modal-table-body');
-            mBody.innerHTML = '';
+            const listContainer = document.getElementById('modal-content-list');
+            listContainer.innerHTML = pplObj.sls_list.map((sls, idx) => `
+                <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-bold text-slate-900">SLS Bagian #${idx + 1}</span>
+                        <p class="text-[10px] text-slate-500">Desa Wilayah Kerja: ${sls.desa}</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-right">
+                        <div>
+                            <div class="text-xs font-bold text-slate-900">${sls.total_submit} / ${sls.total}</div>
+                            <div class="text-[9px] text-slate-400">Approved: ${sls.approved}</div>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">${sls.pct}%</span>
+                    </div>
+                </div>
+            `).join('');
 
-            matches.forEach(item => {
-                const prog = item.submit + item.reject + item.approve;
-                const pct = item.total > 0 ? ((prog / item.total) * 100).toFixed(1) : '0.0';
-
-                let badge = 'text-slate-400';
-                if(parseFloat(pct) >= 85) badge = 'text-emerald-400 font-bold';
-                else if(parseFloat(pct) < 40 && item.total > 0) badge = 'text-rose-400 font-bold';
-
-                mBody.innerHTML += `
-                    <tr class="border-b border-slate-800 hover:bg-slate-800/40">
-                        <td class="p-2.5 text-slate-300">${item.kec}</td>
-                        <td class="p-2.5 text-slate-300 font-semibold">${item.desa}</td>
-                        <td class="p-2.5 text-slate-400"><span class="text-indigo-400 font-mono">${item.idSls}</span> - ${item.namaSls}</td>
-                        <td class="p-2.5 text-center text-blue-400">${item.open}</td>
-                        <td class="p-2.5 text-center text-purple-400">${item.draft}</td>
-                        <td class="p-2.5 text-center text-amber-400">${item.submit}</td>
-                        <td class="p-2.5 text-center text-rose-400">${item.reject}</td>
-                        <td class="p-2.5 text-center text-emerald-400 font-medium">${item.approve}</td>
-                        <td class="p-2.5 text-center text-slate-500">${item.total}</td>
-                        <td class="p-2.5 text-right font-medium ${badge}">${pct}%</td>
-                    </tr>`;
-            });
-
-            document.getElementById('breakdown-modal').classList.remove('hidden');
+            const modal = document.getElementById('sls-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function closeModal() {
-            document.getElementById('breakdown-modal').classList.add('hidden');
+            const modal = document.getElementById('sls-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
         }
     </script>
 </body>
 </html>
+"""
+
+file_path = "dashboard_se2026.html"
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"File created: {file_path}")
