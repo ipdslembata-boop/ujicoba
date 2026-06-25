@@ -98,6 +98,7 @@
                 </div>
             </div>
 
+            <!-- Panel Rincian Per Desa (Muncul saat Kecamatan diklik) -->
             <div id="kecamatan-drilldown-container" class="mt-6 pt-6 border-t border-slate-100 hidden">
                 <h3 class="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
                     <span>📍 Rincian Progres Capaian per Desa di Kecamatan Terpilih</span>
@@ -149,7 +150,7 @@
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6">
             <div class="mb-4">
                 <h3 class="font-bold text-slate-800 text-base">📊 Grafik Komparasi Persentase Capaian Per Korwil</h3>
-                <p class="text-xs text-slate-500">Menampilkan persentase pencapaian kerja akumulatif (Submit + Reject + Approve) dari setiap Koordinator Wilayah</p>
+                <p class="text-xs text-slate-500">Menampilkan persentase pencapaian kerja akumulatif dari setiap Koordinator Wilayah</p>
             </div>
             <div class="relative h-64 sm:h-80">
                 <canvas id="korwilPercentageChart"></canvas>
@@ -167,7 +168,7 @@
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 border-b border-slate-100 pb-4">
                 <div>
                     <h3 class="font-bold text-slate-800 text-base">Ringkasan Progress Total Per Orang (PPL Kumulatif)</h3>
-                    <p class="text-xs text-slate-500">Akumulasi beban kerja dari seluruh wilayah tugas masing-masing PPL beserta struktur pengawas. <b>Klik kartu untuk melihat rincian per SLS.</b></p>
+                    <p class="text-xs text-slate-500">Klik kartu untuk melihat rincian per SLS.</p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <label class="text-xs font-semibold text-slate-600">Urutkan Kotak:</label>
@@ -238,6 +239,7 @@
 
     </main>
 
+    <!-- Modal Detail Progress per SLS -->
     <div id="sls-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-slate-500/75 transition-opacity" onclick="closeModal()"></div>
@@ -279,7 +281,7 @@
     </div>
 
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-400 border-t border-slate-200 mt-12">
-        Dashboard Monitoring Sensus Ekonomi 2026 • Terhubung otomatis ke Google Sheets via live export CSV.
+        Dashboard Monitoring Sensus Ekonomi 2026 • Terhubung otomatis via live export CSV.
     </footer>
 
     <script>
@@ -290,13 +292,6 @@
         let statusPieChart = null;
         let korwilPercentageChart = null;
 
-        const mockFallbackData = [
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Lamalela", sls: "SLS 001", open: 110, draft: 10, submit: 4, reject: 3, approve: 0, total: 127},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Banitobo", sls: "SLS 002", open: 100, draft: 20, submit: 13, reject: 1, approve: 14, total: 148},
-            {korwil: "Ahmad Dani, S.E", pml: "Yohanes Kopong", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Atakowa", sls: "SLS 001", open: 50, draft: 15, submit: 15, reject: 5, approve: 28, total: 113},
-            {korwil: "Siti Rahma, S.Stat", pml: "Kornelis Lalang", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lewoeleng", sls: "SLS 003", open: 100, draft: 40, submit: 23, reject: 4, approve: 75, total: 242}
-        ];
-
         window.addEventListener('DOMContentLoaded', () => {
             fetchData();
         });
@@ -305,10 +300,8 @@
             const now = new Date();
             const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WITA';
             const dateString = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-            const fullTimestamp = `${dateString}, ${timeString}`;
-            
-            document.getElementById('sync-timestamp').innerText = fullTimestamp;
-            document.getElementById('sync-timestamp-mobile').innerText = fullTimestamp;
+            document.getElementById('sync-timestamp').innerText = `${dateString}, ${timeString}`;
+            document.getElementById('sync-timestamp-mobile').innerText = `${dateString}, ${timeString}`;
         }
 
         function fetchData() {
@@ -317,22 +310,17 @@
             document.getElementById('loading-state').style.display = 'flex';
 
             fetch(SHEET_CSV_URL)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response error');
-                    return response.text();
-                })
+                .then(response => response.text())
                 .then(csvText => {
                     parseCSVData(csvText);
                     updateSyncTime();
                 })
                 .catch(err => {
-                    console.warn("Menggunakan data mockup lokal.");
-                    rawData = [...mockFallbackData];
-                    initDashboard();
-                    updateSyncTime();
+                    console.error("Gagal mengambil data CSV", err);
                 });
         }
 
+        // PARSING DISESUAIKAN DENGAN STRUKTUR KOLOM SPREADSHEET BARU
         function parseCSVData(text) {
             const lines = text.split('\n');
             const parsed = [];
@@ -344,32 +332,33 @@
                 const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (cols.length < 14) continue;
                 
-                const openVal = parseInt(cols[8]) || 0;
-                const draftVal = parseInt(cols[9]) || 0;
-                const submitVal = parseInt(cols[10]) || 0;
-                const rejectVal = parseInt(cols[11]) || 0;
-                const approveVal = parseInt(cols[12]) || 0;
-                const totalVal = parseInt(cols[13]) || (openVal + draftVal + submitVal + rejectVal + approveVal);
+                const kecVal = cols[0]?.replace(/"/g, '').trim();
+                if (!kecVal || kecVal === "kecamatan") continue;
 
-                if (cols[3] && cols[3].trim() !== "" && cols[3] !== "Nama PPL") {
-                    parsed.push({
-                        korwil: cols[1]?.replace(/"/g, '').trim(),
-                        pml: cols[2]?.replace(/"/g, '').trim(),
-                        ppl: cols[3]?.replace(/"/g, '').trim(),
-                        kec: cols[5]?.replace(/"/g, '').trim(),
-                        desa: cols[6]?.replace(/"/g, '').trim(),
-                        sls: cols[7]?.replace(/"/g, '').trim() || 'SLS Standar',
-                        open: openVal,
-                        draft: draftVal,
-                        submit: submitVal,
-                        reject: rejectVal,
-                        approve: approveVal,
-                        total: totalVal
-                    });
-                }
+                const totalVal = parseInt(cols[6]) || 0;
+                const approveVal = parseInt(cols[7]) || 0;
+                const draftVal = parseInt(cols[8]) || 0;
+                const openVal = parseInt(cols[10]) || 0;
+                const rejectVal = parseInt(cols[11]) || 0;
+                const submitVal = parseInt(cols[13]) || 0;
+
+                parsed.push({
+                    kec: kecVal,
+                    desa: cols[1]?.replace(/"/g, '').trim(),
+                    sls: cols[2]?.replace(/"/g, '').trim(),
+                    korwil: cols[3]?.replace(/"/g, '').trim(),
+                    pml: cols[4]?.replace(/"/g, '').trim(),
+                    ppl: cols[5]?.replace(/"/g, '').trim(),
+                    total: totalVal,
+                    approve: approveVal,
+                    draft: draftVal,
+                    open: openVal,
+                    reject: rejectVal,
+                    submit: submitVal
+                });
             }
             
-            rawData = parsed.length > 0 ? parsed : [...mockFallbackData];
+            rawData = parsed;
             initDashboard();
         }
 
@@ -432,7 +421,6 @@
             renderKecamatanDrilldown(selectedKec);
         }
 
-        // FUNGSI BARU: Render progres per desa jika filter Kecamatan aktif
         function renderKecamatanDrilldown(selectedKec) {
             const container = document.getElementById('kecamatan-drilldown-container');
             const listContainer = document.getElementById('desa-progress-list');
@@ -474,15 +462,12 @@
             });
         }
 
-        // FUNGSI BARU: Buka Modal Detail SLS ketika kartu PPL diklik
         window.openPplDetail = function(pplName) {
             document.getElementById('modal-ppl-name').innerText = pplName;
             const tbody = document.getElementById('modal-sls-tbody');
             tbody.innerHTML = '';
             
-            // Filter tugas spesifik milik PPL ini
             const tasks = rawData.filter(item => item.ppl === pplName);
-            
             tasks.forEach(t => {
                 const progressDoc = t.submit + t.reject + t.approve;
                 const pct = t.total > 0 ? ((progressDoc / t.total) * 100).toFixed(1) : '0.0';
@@ -491,7 +476,7 @@
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-2.5 px-3">
                             <div class="font-semibold text-slate-900">${t.desa}</div>
-                            <div class="text-[10px] text-indigo-600 font-medium">${t.sls}</div>
+                            <div class="text-[10px] text-indigo-600 font-medium">SLS ${t.sls}</div>
                         </td>
                         <td class="py-2.5 px-1 text-center text-blue-600 font-medium">${t.open}</td>
                         <td class="py-2.5 px-1 text-center text-purple-600 font-medium">${t.draft}</td>
@@ -533,11 +518,11 @@
             document.getElementById('kpi-reject').innerText = reject.toLocaleString('id-ID');
             document.getElementById('kpi-approve').innerText = approve.toLocaleString('id-ID');
 
-            document.getElementById('pct-open').innerText = total > 0 ? `${((open/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-draft').innerText = total > 0 ? `${((draft/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-submit').innerText = total > 0 ? `${((submit/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-reject').innerText = total > 0 ? `${((reject/total)*100).toFixed(1)}% dari total` : '-';
-            document.getElementById('pct-approve').innerText = total > 0 ? `${((approve/total)*100).toFixed(1)}% selesai` : '-';
+            document.getElementById('pct-open').innerText = total > 0 ? `${((open/total)*100).toFixed(1)}%` : '-';
+            document.getElementById('pct-draft').innerText = total > 0 ? `${((draft/total)*100).toFixed(1)}%` : '-';
+            document.getElementById('pct-submit').innerText = total > 0 ? `${((submit/total)*100).toFixed(1)}%` : '-';
+            document.getElementById('pct-reject').innerText = total > 0 ? `${((reject/total)*100).toFixed(1)}%` : '-';
+            document.getElementById('pct-approve').innerText = total > 0 ? `${((approve/total)*100).toFixed(1)}%` : '-';
             
             document.getElementById('kpi-progress').innerText = `${pctProgress}%`;
             document.getElementById('progress-bar-kpi').style.width = `${pctProgress}%`;
@@ -545,7 +530,6 @@
 
         function renderLeaderboards(data) {
             const pplGroup = {};
-
             data.forEach(item => {
                 if(item.ppl) {
                     if(!pplGroup[item.ppl]) pplGroup[item.ppl] = { progressDoc: 0, total: 0 };
@@ -570,37 +554,6 @@
                         <span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded shrink-0">${item.pct}%</span>
                     </div>`;
             });
-        }
-
-        function renderTemplateDynamicCard(pplName, group, pct, colorClass, progressColor, displayKorwil, displayPML, progressDoc) {
-            // Ditambahkan trigger onclick untuk membuka modal rincian SLS
-            return `
-                <div onclick="openPplDetail('${pplName.replace(/'/g, "\\'")}')" class="p-4 rounded-xl border ${colorClass} shadow-xs flex flex-col justify-between space-y-3 cursor-pointer hover:scale-[1.01] hover:shadow-md transition duration-200">
-                    <div>
-                        <div class="flex justify-between items-start gap-2">
-                            <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate max-w-[75%]">${pplName}</h4>
-                            <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 shrink-0">${pct}%</span>
-                        </div>
-                        <div class="mt-1.5 space-y-0.5 border-b border-slate-100/70 pb-2">
-                            <p class="text-[10px] text-slate-500 truncate"><b>Korwil:</b> ${displayKorwil}</p>
-                            <p class="text-[10px] text-slate-500 truncate"><b>PML:</b> ${displayPML}</p>
-                        </div>
-                        <p class="text-[10px] text-slate-400 truncate mt-1.5"><b>Wilayah:</b> ${group.desaList.join(', ')}</p>
-                    </div>
-                    <div class="grid grid-cols-5 text-center text-[10px] gap-1 bg-slate-100/50 p-1.5 rounded-lg text-slate-600 font-medium">
-                        <div><div class="text-blue-600">${group.open}</div>Op</div>
-                        <div><div class="text-purple-600">${group.draft}</div>Dr</div>
-                        <div><div class="text-amber-600">${group.submit}</div>Sub</div>
-                        <div><div class="text-red-500">${group.reject}</div>Rej</div>
-                        <div><div class="text-emerald-600">${group.approve}</div>App</div>
-                    </div>
-                    <div class="space-y-1">
-                        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                            <div class="${progressColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
-                        </div>
-                        <div class="text-[9px] text-right text-slate-400">Prog: <b>${progressDoc}</b> / Total: <b>${group.total}</b></div>
-                    </div>
-                </div>`;
         }
 
         function renderPPLSummary(data) {
@@ -642,15 +595,10 @@
             }
 
             keys.sort((a, b) => {
-                if (sortMethod === 'alphabet') {
-                    return a.localeCompare(b);
-                } else {
-                    const groupA = pplSummary[a];
-                    const pctA = groupA.total > 0 ? ((groupA.submit + groupA.reject + groupA.approve) / groupA.total) : 0;
-                    const groupB = pplSummary[b];
-                    const pctB = groupB.total > 0 ? ((groupB.submit + groupB.reject + groupB.approve) / groupB.total) : 0;
-                    return pctA - pctB || a.localeCompare(b);
-                }
+                if (sortMethod === 'alphabet') return a.localeCompare(b);
+                const pctA = pplSummary[a].total > 0 ? ((pplSummary[a].submit + pplSummary[a].reject + pplSummary[a].approve) / pplSummary[a].total) : 0;
+                const pctB = pplSummary[b].total > 0 ? ((pplSummary[b].submit + pplSummary[b].reject + pplSummary[b].approve) / pplSummary[b].total) : 0;
+                return pctA - pctB;
             });
 
             keys.forEach(pplName => {
@@ -663,10 +611,33 @@
                 if (parseFloat(pct) >= 75) { colorClass = 'bg-emerald-50/50 border-emerald-200'; progressColor = 'bg-emerald-600'; }
                 else if (parseFloat(pct) > 0) { colorClass = 'bg-amber-50/50 border-amber-200'; progressColor = 'bg-amber-500'; }
 
-                const displayKorwil = group.korwilList.length > 0 ? group.korwilList.join(', ') : '-';
-                const displayPML = group.pmlList.length > 0 ? group.pmlList.join(', ') : '-';
-
-                summaryContainer.innerHTML += renderTemplateDynamicCard(pplName, group, pct, colorClass, progressColor, displayKorwil, displayPML, progressDoc);
+                summaryContainer.innerHTML += `
+                    <div onclick="openPplDetail('${pplName.replace(/'/g, "\\'")}')" class="p-4 rounded-xl border ${colorClass} shadow-xs flex flex-col justify-between space-y-3 cursor-pointer hover:scale-[1.01] hover:shadow-md transition duration-200">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate max-w-[75%]">${pplName}</h4>
+                                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 shrink-0">${pct}%</span>
+                            </div>
+                            <div class="mt-1.5 space-y-0.5 border-b border-slate-100/70 pb-2 text-[10px] text-slate-500">
+                                <p class="truncate"><b>Korwil:</b> ${group.korwilList.join(', ')}</p>
+                                <p class="truncate"><b>PML:</b> ${group.pmlList.join(', ')}</p>
+                            </div>
+                            <p class="text-[10px] text-slate-400 truncate mt-1.5"><b>Wilayah:</b> ${group.desaList.join(', ')}</p>
+                        </div>
+                        <div class="grid grid-cols-5 text-center text-[10px] gap-1 bg-slate-100/50 p-1.5 rounded-lg text-slate-600 font-medium">
+                            <div><div class="text-blue-600">${group.open}</div>Op</div>
+                            <div><div class="text-purple-600">${group.draft}</div>Dr</div>
+                            <div><div class="text-amber-600">${group.submit}</div>Sub</div>
+                            <div><div class="text-red-500">${group.reject}</div>Rej</div>
+                            <div><div class="text-emerald-600">${group.approve}</div>App</div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                                <div class="${progressColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
+                            </div>
+                            <div class="text-[9px] text-right text-slate-400">Prog: <b>${progressDoc}</b> / Total: <b>${group.total}</b></div>
+                        </div>
+                    </div>`;
             });
         }
 
@@ -704,80 +675,40 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { callback: value => value + '%' }
-                        },
-                        x: {
-                            ticks: { font: { size: 10, weight: '600' } }
-                        }
+                        y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } }
                     },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const korwilName = context.label;
-                                    const g = korwilGroup[korwilName];
-                                    return ` Progres: ${context.raw}% (${g.progressDoc}/${g.total} Dokumen)`;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { display: false } }
                 }
             });
         }
 
         function renderCharts(data) {
             const chartData = data.slice(0, 15);
-            const labels = chartData.map(d => {
-                const shortPpl = d.ppl.length > 10 ? d.ppl.substring(0, 10) + '..' : d.ppl;
-                return `${shortPpl} (${d.desa})`;
-            });
+            const labels = chartData.map(d => `${d.ppl.substring(0, 10)}.. (${d.desa})`);
             
-            const openDataset = chartData.map(d => d.open);
-            const draftDataset = chartData.map(d => d.draft);
-            const submitDataset = chartData.map(d => d.submit);
-            const rejectDataset = chartData.map(d => d.reject);
-            const approveDataset = chartData.map(d => d.approve);
-
             if (progressChart) progressChart.destroy();
-
             const ctx = document.getElementById('progressChart').getContext('2d');
             progressChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Approved', data: approveDataset, backgroundColor: '#10b981' },
-                        { label: 'Submitted', data: submitDataset, backgroundColor: '#f59e0b' },
-                        { label: 'Rejected', data: rejectDataset, backgroundColor: '#ef4444' },
-                        { label: 'Draft', data: draftDataset, backgroundColor: '#a855f7' },
-                        { label: 'Open / Belum', data: openDataset, backgroundColor: '#3b82f6' }
+                        { label: 'Approved', data: chartData.map(d => d.approve), backgroundColor: '#10b981' },
+                        { label: 'Submitted', data: chartData.map(d => d.submit), backgroundColor: '#f59e0b' },
+                        { label: 'Rejected', data: chartData.map(d => d.reject), backgroundColor: '#ef4444' },
+                        { label: 'Draft', data: chartData.map(d => d.draft), backgroundColor: '#a855f7' },
+                        { label: 'Open', data: chartData.map(d => d.open), backgroundColor: '#3b82f6' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        x: { stacked: true, ticks: { font: { size: 9 } } },
-                        y: { stacked: true }
-                    },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
-                    }
+                    scales: { x: { stacked: true }, y: { stacked: true } }
                 }
             });
 
-            let totalOpen = 0, totalDraft = 0, totalSubmit = 0, totalReject = 0, totalApprove = 0;
-            data.forEach(d => {
-                totalOpen += d.open;
-                totalDraft += d.draft;
-                totalSubmit += d.submit;
-                totalReject += d.reject;
-                totalApprove += d.approve;
-            });
+            let o = 0, dr = 0, s = 0, r = 0, a = 0;
+            data.forEach(d => { o += d.open; dr += d.draft; s += d.submit; r += d.reject; a += d.approve; });
 
             if (statusPieChart) statusPieChart.destroy();
             const ctxPie = document.getElementById('statusPieChart').getContext('2d');
@@ -785,18 +716,9 @@
                 type: 'doughnut',
                 data: {
                     labels: ['Open', 'Draft', 'Submitted', 'Rejected', 'Approved'],
-                    datasets: [{
-                        data: [totalOpen, totalDraft, totalSubmit, totalReject, totalApprove],
-                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#10b981']
-                    }]
+                    datasets: [{ data: [o, dr, s, r, a], backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#10b981'] }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
 
@@ -805,7 +727,7 @@
             document.getElementById('table-row-count').innerText = `${data.length} Petugas / Tugas`;
             
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">Tidak ada data tugas pencacah yang cocok dengan filter</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">Tidak ada data</td></tr>`;
                 return;
             }
 
@@ -814,30 +736,18 @@
                 const progressDoc = item.submit + item.reject + item.approve;
                 const pct = item.total > 0 ? ((progressDoc / item.total) * 100).toFixed(1) : '0.0';
                 
-                let badgeClass = 'bg-slate-100 text-slate-700';
-                if (parseFloat(pct) >= 75) badgeClass = 'bg-emerald-100 text-emerald-800 font-semibold';
-                else if (parseFloat(pct) > 0) badgeClass = 'bg-amber-100 text-amber-800';
-
-                html += `<tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-3 pl-4 font-medium text-slate-400 text-xs">${index + 1}</td>
-                    <td class="p-3">
-                        <div class="font-semibold text-slate-900 text-xs">${item.korwil}</div>
-                        <div class="text-[10px] text-slate-400">PML: ${item.pml}</div>
-                    </td>
-                    <td class="p-3 font-medium text-slate-800 text-xs">${item.ppl}</td>
-                    <td class="p-3 text-xs">
-                        <div class="text-slate-700">${item.kec}</div>
-                        <div class="text-[10px] text-slate-400 font-medium">${item.desa} / ${item.sls}</div>
-                    </td>
-                    <td class="p-3 text-center text-blue-600 font-medium text-xs">${item.open}</td>
-                    <td class="p-3 text-center text-purple-600 font-medium text-xs">${item.draft}</td>
-                    <td class="p-3 text-center text-amber-600 font-medium text-xs">${item.submit}</td>
+                html += `<tr>
+                    <td class="p-3 pl-4 text-xs">${index + 1}</td>
+                    <td class="p-3 text-xs"><b>${item.korwil}</b><br><span class="text-slate-400">PML: ${item.pml}</span></td>
+                    <td class="p-3 text-xs font-medium">${item.ppl}</td>
+                    <td class="p-3 text-xs">${item.kec}<br><span class="text-slate-400">${item.desa} / SLS ${item.sls}</span></td>
+                    <td class="p-3 text-center text-blue-600 text-xs">${item.open}</td>
+                    <td class="p-3 text-center text-purple-600 text-xs">${item.draft}</td>
+                    <td class="p-3 text-center text-amber-600 text-xs">${item.submit}</td>
                     <td class="p-3 text-center text-red-500 text-xs">${item.reject}</td>
                     <td class="p-3 text-center text-emerald-600 font-bold text-xs">${item.approve}</td>
-                    <td class="p-3 text-center font-semibold text-slate-600 text-xs">${item.total}</td>
-                    <td class="p-3 pr-4 text-right">
-                        <span class="inline-block px-2 py-0.5 rounded text-xs ${badgeClass}">${pct}%</span>
-                    </td>
+                    <td class="p-3 text-center font-semibold text-xs">${item.total}</td>
+                    <td class="p-3 pr-4 text-right text-xs"><span class="px-2 py-0.5 rounded bg-slate-100">${pct}%</span></td>
                 </tr>`;
             });
             tbody.innerHTML = html;
