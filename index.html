@@ -63,8 +63,8 @@
 
         <div id="loading-state" class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="animate-spin rounded-full h-5 w-5 border-2 border-indigo-600 border-t-transparent"></div>
-                <p class="text-sm text-indigo-700 font-medium">Sedang memuat dan menyinkronkan data langsung dari Google Sheets...</p>
+                <div id="loading-spinner" class="animate-spin rounded-full h-5 w-5 border-2 border-indigo-600 border-t-transparent"></div>
+                <p id="loading-text" class="text-sm text-indigo-700 font-medium">Sedang memuat dan menyinkronkan data langsung dari Google Sheets...</p>
             </div>
         </div>
 
@@ -281,13 +281,6 @@
         let statusPieChart = null;
         let korwilPercentageChart = null;
 
-        const mockFallbackData = [
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Lamalela", open: 110, draft: 10, submit: 4, reject: 3, approve: 0, total: 127},
-            {korwil: "Komang Uning Sari Devi, S.Tr.Stat", pml: "Marianus Duli Lasar", ppl: "Agustinus Gasa Lengari", kec: "Lebatukan", desa: "Banitobo", open: 100, draft: 20, submit: 13, reject: 1, approve: 14, total: 148},
-            {korwil: "Ahmad Dani, S.E", pml: "Yohanes Kopong", ppl: "Elfira Deta Tuto", kec: "Lebatukan", desa: "Atakowa", open: 50, draft: 15, submit: 15, reject: 5, approve: 28, total: 113},
-            {korwil: "Siti Rahma, S.Stat", pml: "Kornelis Lalang", ppl: "Maria Magdalena Runi", kec: "Lebatukan", desa: "Lewoeleng", open: 100, draft: 40, submit: 23, reject: 4, approve: 75, total: 242}
-        ];
-
         window.addEventListener('DOMContentLoaded', () => {
             fetchData();
         });
@@ -305,22 +298,34 @@
         function fetchData() {
             const icon = document.getElementById('refresh-icon');
             if (icon) icon.classList.add('animate-spin');
+            
+            // Set alert status memuat data yang bersih
+            document.getElementById('loading-state').className = "bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between";
+            document.getElementById('loading-spinner').className = "animate-spin rounded-full h-5 w-5 border-2 border-indigo-600 border-t-transparent";
+            document.getElementById('loading-text').className = "text-sm text-indigo-700 font-medium";
+            document.getElementById('loading-text').innerText = "Sedang memuat dan menyinkronkan data langsung dari Google Sheets...";
             document.getElementById('loading-state').style.display = 'flex';
 
             fetch(SHEET_CSV_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error('Network response error');
+                    if (!response.ok) throw new Error('Gagal terhubung');
                     return response.text();
                 })
                 .then(csvText => {
                     parseCSVData(csvText);
                     updateSyncTime();
+                    document.getElementById('loading-state').style.display = 'none';
+                    if (icon) icon.classList.remove('animate-spin');
                 })
                 .catch(err => {
-                    console.warn("Menggunakan data mockup lokal karena kendala fetch.");
-                    rawData = [...mockFallbackData];
-                    initDashboard();
-                    updateSyncTime();
+                    console.error(err);
+                    if (icon) icon.classList.remove('animate-spin');
+                    
+                    // Jika gagal, ubah banner loading menjadi banner peringatan error yang rapi
+                    document.getElementById('loading-spinner').className = "hidden";
+                    document.getElementById('loading-state').className = "bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between";
+                    document.getElementById('loading-text').className = "text-sm text-amber-800 font-medium";
+                    document.getElementById('loading-text').innerHTML = "⚠️ <b>Gagal memuat pembaruan data otomatis.</b> Pastikan pengaturan spreadsheet Anda telah diatur ke <b>\"Publish to the web\"</b> dengan format <b>Comma-separated values (.csv)</b>.";
                 });
         }
 
@@ -361,15 +366,11 @@
                 }
             }
             
-            rawData = parsed.length > 0 ? parsed : [...mockFallbackData];
+            rawData = parsed;
             initDashboard();
         }
 
         function initDashboard() {
-            document.getElementById('loading-state').style.display = 'none';
-            const icon = document.getElementById('refresh-icon');
-            if (icon) icon.classList.remove('animate-spin');
-
             populateFilterOptions();
             applyFilters();
         }
