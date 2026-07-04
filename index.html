@@ -186,9 +186,11 @@ canvas.sig{display:block;width:100%;height:90px;cursor:crosshair;touch-action:no
 .ttd-meta{padding:7px 10px}
 .nm{border-bottom:1.5px solid #111;font-weight:bold;font-size:12px;padding-bottom:2px;margin-bottom:3px;display:block;width:100%;text-align:center;font-family:Arial,sans-serif}
 .np{color:#555;font-size:11px;display:block;width:100%;text-align:center;font-family:Arial,sans-serif}
-.ttd-tools{padding:3px 8px 5px;display:flex;justify-content:center}
-.hsig{font-size:11px;padding:3px 10px;cursor:pointer;border:1.5px solid #f88;color:#c00;background:transparent;border-radius:3px}
+.ttd-tools{padding:3px 8px 5px;display:flex;justify-content:center;gap:6px}
+.hsig{font-size:11px;padding:3px 8px;cursor:pointer;border:1.5px solid #f88;color:#c00;background:transparent;border-radius:3px}
 .hsig:hover{background:#fff0f0}
+.upsig-btn{font-size:11px;padding:3px 8px;cursor:pointer;border:1.5px solid #2563a8;color:#2563a8;background:transparent;border-radius:3px}
+.upsig-btn:hover{background:#f0f6ff}
 .delttd{position:absolute;top:3px;right:4px;background:none;border:none;cursor:pointer;color:#bbb;font-size:12px}
 .delttd:hover{color:#c00}
 .addttd{
@@ -280,7 +282,6 @@ canvas.sig{display:block;width:100%;height:90px;cursor:crosshair;touch-action:no
       <tr><td class="lb">2.&nbsp;Tempat</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-tempat" data-placeholder="Aula BPS Kabupaten Lembata"></div></td></tr>
       <tr><td class="lb">3.&nbsp;Pukul</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-pukul" data-placeholder="07.30 Wita - Selesai"></div></td></tr>
       
-      <!-- Topik Materi -->
       <tr>
         <td class="lb">4.&nbsp;Topik Materi</td>
         <td class="cl">:</td>
@@ -290,7 +291,6 @@ canvas.sig{display:block;width:100%;height:90px;cursor:crosshair;touch-action:no
         </td>
       </tr>
       
-      <!-- Pemateri -->
       <tr>
         <td class="lb">5.&nbsp;Pemateri</td>
         <td class="cl">:</td>
@@ -303,7 +303,6 @@ canvas.sig{display:block;width:100%;height:90px;cursor:crosshair;touch-action:no
       <tr><td class="lb">6.&nbsp;Notulis</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-notulis" data-placeholder="Komang Uning Sari Devi"></div></td></tr>
       <tr><td class="lb">7.&nbsp;Link Paparan</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-link" data-placeholder="https://www.notion.so/bps-lembata"></div></td></tr>
       
-      <!-- Kehadiran Otomatis -->
       <tr>
         <td class="lb">8.&nbsp;Lampiran 1</td>
         <td class="cl">:</td>
@@ -321,28 +320,24 @@ canvas.sig{display:block;width:100%;height:90px;cursor:crosshair;touch-action:no
     </table>
   </div>
 
-  <!-- Ringkasan Paparan -->
   <div class="sec">
     <div class="sec-hd">RINGKASAN PAPARAN</div>
     <div class="dynamic-list" id="ringkasan-container"></div>
     <button class="btn-inline-add" onclick="addItem('ringkasan-container', '')">+ Tambah Poin Ringkasan</button>
   </div>
 
-  <!-- Pembahasan / Diskusi -->
   <div class="sec">
     <div class="sec-hd">PEMBAHASAN / DISKUSI</div>
     <div class="dynamic-list" id="pembahasan-container"></div>
     <button class="btn-inline-add" onclick="addItem('pembahasan-container', '')">+ Tambah Poin Pembahasan</button>
   </div>
 
-  <!-- Kesimpulan -->
   <div class="sec">
     <div class="sec-hd">KESIMPULAN</div>
     <div class="dynamic-list" id="kesimpulan-container"></div>
     <button class="btn-inline-add" onclick="addItem('kesimpulan-container', '')">+ Tambah Poin Kesimpulan</button>
   </div>
 
-  <!-- Tindak Lanjut -->
   <div class="sec">
     <div class="sec-hd">TINDAK LANJUT</div>
     <div class="tl-wrap">
@@ -393,7 +388,6 @@ function addItem(containerId, text) {
   var item = document.createElement('div');
   item.className = 'dynamic-item';
   
-  // Set placeholder berdasarkan jenis containernya
   var ph = "Tulis di sini...";
   if(containerId==='topik-container') ph = "Tulis topik baru di sini...";
   if(containerId==='pemateri-container') ph = "Nama Pemateri / Jabatan...";
@@ -408,7 +402,6 @@ function addItem(containerId, text) {
   `;
   container.appendChild(item);
   
-  // Event listener untuk auto-save saat mengetik
   item.querySelector('.item-text').addEventListener('input', saveDraft);
   
   if(!text) {
@@ -430,7 +423,7 @@ function calcPercent() {
   textEl.textContent = `(Persentase kehadiran ${percent}% dari ${total} pegawai BPS)`;
 }
 
-// TTD SYSTEM
+// TTD SYSTEM WITH UPLOAD OPTION
 var ttds = [];
 var cvs = [];
 
@@ -463,17 +456,40 @@ function mkBox(d, i) {
   np.setAttribute('data-placeholder', 'NIP.'); np.textContent = d.nip;
   mt.appendChild(nm); mt.appendChild(np); b.appendChild(mt);
 
+  // Hidden Input File untuk upload TTD per box
+  var finp = document.createElement('input');
+  finp.type = 'file';
+  finp.accept = 'image/*';
+  finp.style.display = 'none';
+  finp.onchange = function(e) {
+    if(e.target.files && e.target.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        loadSigData(cv, ev.target.result);
+        setTimeout(saveDraft, 200); // Trigger simpan setelah gambar termuat
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+  b.appendChild(finp);
+
   var tl = document.createElement('div'); tl.className = 'ttd-tools';
-  var hb = document.createElement('button'); hb.className = 'hsig'; hb.textContent = 'Hapus TTD';
+  
+  var hb = document.createElement('button'); hb.className = 'hsig'; hb.textContent = 'Hapus';
   hb.onclick = (function(c) {
     return function() {
       c.getContext('2d').clearRect(0, 0, c.width, c.height);
       saveDraft();
     }
   })(cv);
-  tl.appendChild(hb); b.appendChild(tl);
+  
+  var ub = document.createElement('button'); ub.className = 'upsig-btn'; ub.textContent = 'Upload';
+  ub.onclick = function() { finp.click(); };
 
-  // Ambil perubahan teks di TTD secara berkala untuk di-save
+  tl.appendChild(ub);
+  tl.appendChild(hb);
+  b.appendChild(tl);
+
   re.addEventListener('input', saveDraft);
   nm.addEventListener('input', saveDraft);
   np.addEventListener('input', saveDraft);
@@ -490,7 +506,6 @@ function updateTtdDataStructure() {
     var name = boxes[i].querySelector('.nm').textContent;
     var nip = boxes[i].querySelector('.np').textContent;
     
-    // Simpan data gambar tanda tangan saat ini agar tidak hilang saat re-render
     var canvas = boxes[i].querySelector('canvas');
     var dataUrl = canvas ? canvas.toDataURL() : "";
     
@@ -541,9 +556,19 @@ function initSig(cv) {
 
 function loadSigData(cv, dataUrl) {
   if (!dataUrl || dataUrl.startsWith("data:image/gif;base64")) return;
+  var ctx = cv.getContext('2d');
   var img = new Image();
   img.onload = function() {
-    cv.getContext('2d').drawImage(img, 0, 0);
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    
+    // Hitung rasio aspek gambar agar pas di dalam kotak canvas (90px) tanpa terdistorsi
+    var hRatio = cv.width / img.width;
+    var vRatio = cv.height / img.height;
+    var ratio  = Math.min(hRatio, vRatio);
+    var centerShift_x = (cv.width - img.width * ratio) / 2;
+    var centerShift_y = (cv.height - img.height * ratio) / 2;  
+    
+    ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
   };
   img.src = dataUrl;
 }
@@ -619,10 +644,8 @@ function createDocItem(src, caption) {
 const STORAGE_KEY = 'bps_lembata_notula_draft';
 
 function saveDraft() {
-  // Update data struktur TTD terupdate
   updateTtdDataStructure();
 
-  // Kumpulkan semua data dinamis list item
   var getListItems = function(containerId) {
     var arr = [];
     var items = document.querySelectorAll('#' + containerId + ' .item-text');
@@ -630,7 +653,6 @@ function saveDraft() {
     return arr;
   };
 
-  // Kumpulkan data tabel Tindak Lanjut
   var tlRows = [];
   var rows = document.querySelectorAll('#tlbody tr');
   rows.forEach(row => {
@@ -644,7 +666,6 @@ function saveDraft() {
     }
   });
 
-  // Kumpulkan data dokumentasi foto
   var docs = [];
   var docItems = document.querySelectorAll('#docgrid .doc-item');
   docItems.forEach(item => {
@@ -681,7 +702,6 @@ function saveDraft() {
 function loadDraft() {
   var rawData = localStorage.getItem(STORAGE_KEY);
   
-  // Jika tidak ada data tersimpan, tampilkan template default kosong dengan placeholder bawaan
   if (!rawData) {
     initDefaultEmptyTemplate();
     return;
@@ -690,7 +710,6 @@ function loadDraft() {
   try {
     var data = JSON.parse(rawData);
 
-    // Load teks standard
     document.getElementById('txt-j1').textContent = data.j1 || "";
     document.getElementById('txt-j2').textContent = data.j2 || "";
     document.getElementById('txt-j3').textContent = data.j3 || "";
@@ -703,21 +722,18 @@ function loadDraft() {
     document.getElementById('inp-total').value = data.total || 0;
     document.getElementById('txt-penutup').textContent = data.penutup || "";
 
-    // Load List item dinamis
     if(data.topik) data.topik.forEach(t => addItem('topik-container', t));
     if(data.pemateri) data.pemateri.forEach(p => addItem('pemateri-container', p));
     if(data.ringkasan) data.ringkasan.forEach(r => addItem('ringkasan-container', r));
     if(data.pembahasan) data.pembahasan.forEach(pb => addItem('pembahasan-container', pb));
     if(data.kesimpulan) data.kesimpulan.forEach(k => addItem('kesimpulan-container', k));
 
-    // Load tabel Tindak Lanjut
     if(data.tindakLanjut && data.tindakLanjut.length > 0) {
       data.tindakLanjut.forEach(row => addTL(row.uraian, row.pj, row.deadline));
     } else {
-      addTL(); addTL(); // default minimal 2 baris kosong jika tidak ada data
+      addTL(); addTL();
     }
 
-    // Load Tanda tangan
     if(data.signatures && data.signatures.length > 0) {
       ttds = data.signatures;
       renderTTD();
@@ -725,7 +741,6 @@ function loadDraft() {
       initDefaultSignatures();
     }
 
-    // Load Dokumentasi foto
     if(data.dokumentasi) {
       data.dokumentasi.forEach(d => createDocItem(d.src, d.cap));
     }
@@ -739,7 +754,6 @@ function loadDraft() {
 }
 
 function initDefaultEmptyTemplate() {
-  // Hanya inisialisasi struktur list kosong agar placeholder CSS aktif secara natural saat diklik
   addItem('topik-container', '');
   addItem('pemateri-container', '');
   addItem('ringkasan-container', '');
@@ -757,7 +771,6 @@ function initDefaultSignatures() {
   ];
   renderTTD();
   
-  // Berikan label placeholder visual di atas canvas/NIP secara aman pasca render pertama
   var boxes = document.getElementsByClassName('ttd-box');
   if(boxes.length >= 2) {
     boxes[0].querySelector('.ttd-re').setAttribute('data-placeholder', 'Notulis,');
@@ -768,17 +781,14 @@ function initDefaultSignatures() {
 function resetDraft() {
   if (confirm("Apakah Anda yakin ingin menghapus semua isi draft? Data yang sudah diisi akan hilang permanen.")) {
     localStorage.removeItem(STORAGE_KEY);
-    // Reload halaman untuk merestart kondisi kosong bersih
     window.location.reload();
   }
 }
 
-// Daftarkan aksi save draft global pada setiap kali element statis diketik
 document.querySelectorAll('[contenteditable]').forEach(el => {
   el.addEventListener('input', saveDraft);
 });
 
-// Jalankan Load Data Saat Pertama Kali Aplikasi Dibuka
 window.onload = function() {
   loadDraft();
 };
