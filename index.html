@@ -1,797 +1,390 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Notulensi Rapat – BPS Kabupaten Lembata</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;font-size:12px;background:#ccc;color:#111}
-
-#nav{
-  background:#1F4E79;color:#fff;padding:8px 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;gap:10px;
-}
-#nav span{font-size:13px;font-weight:bold}
-.nav-buttons{display:flex;gap:8px}
-.btn-print{
-  background:#28a745;color:#fff;border:none;
-  padding:7px 18px;border-radius:3px;font-size:12px;font-weight:bold;cursor:pointer;
-}
-.btn-print:hover{background:#218838}
-.btn-reset{
-  background:#dc3545;color:#fff;border:none;
-  padding:7px 14px;border-radius:3px;font-size:12px;font-weight:bold;cursor:pointer;
-}
-.btn-reset:hover{background:#bd2130}
-
-/* UKURAN LAYAR EDITOR */
-#page{
-  max-width:794px;margin:20px auto 48px;
-  background:#fff;border:1px solid #999;
-  padding: 0 40px; 
-}
-
-/* JUDUL */
-#judul{text-align:center;padding:20px 20px 12px;border-bottom:2px solid #1F4E79}
-[contenteditable]{outline:none}
-[contenteditable]:hover{background:rgba(37,99,168,.06)}
-[contenteditable]:focus{background:rgba(37,99,168,.10);outline:1.5px dashed #2563a8;border-radius:2px}
-
-/* Trik Teks Dummy Menghilang Saat Fokus */
-[contenteditable][data-placeholder]:empty:before {
-  content: attr(data-placeholder);
-  color: #aaa;
-  font-style: italic;
-}
-
-.j1{font-size:15px;font-weight:bold;display:block;text-align:center;width:100%;font-family:Arial,sans-serif}
-.j2,.j3{font-size:12px;font-weight:bold;display:block;text-align:center;width:100%;font-family:Arial,sans-serif;margin-top:1px}
-
-/* SECTION */
-.sec{border-bottom:1px solid #aaa}
-.sec:last-child{border-bottom:none}
-.sec-hd{background:#1F4E79;color:#fff;padding:6px 14px;font-size:11px;font-weight:bold;letter-spacing:.6px}
-
-/* INFO TABLE */
-.itbl{width:100%;border-collapse:collapse}
-.itbl tr{border-bottom:1px solid #C8D8E8}
-.itbl tr:last-child{border-bottom:none}
-.itbl .lb{
-  background:#D6E4F0;font-weight:bold;
-  padding:5px 8px 5px 14px;width:155px;
-  vertical-align:top;white-space:nowrap;
-}
-.itbl .cl{background:#D6E4F0;padding:5px 3px;width:12px;vertical-align:top}
-.itbl .vl{padding:0;vertical-align:top}
-.itbl .vl div.editable-cell{
-  display:block;padding:5px 8px;
-  font-family:Arial,sans-serif;font-size:12px;line-height:1.55;
-  word-break:break-word;
-}
-
-/* DINAMIS LIST SUB-ITEM (BULLET SYSTEM) */
-.dynamic-list {
-  padding: 6px 14px;
-}
-.itbl .dynamic-list {
-  padding: 5px 8px;
-}
-.dynamic-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  margin-bottom: 5px;
-}
-.dynamic-item:last-child {
-  margin-bottom: 0;
-}
-.bullet-sign {
-  padding-top: 3px;
-  font-size: 10px;
-  color: #1F4E79;
-}
-.item-text {
-  flex: 1;
-  font-size: 12px;
-  line-height: 1.6;
-  padding: 1px 4px;
-  word-break: break-word;
-  text-align: justify;
-}
-.btn-inline-del {
-  background: none;
-  border: none;
-  color: #ccc;
-  cursor: pointer;
-  font-size: 11px;
-  padding: 2px 4px;
-}
-.btn-inline-del:hover { color: #c00 }
-.btn-inline-add {
-  margin: 2px 14px 10px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: bold;
-  cursor: pointer;
-  background: transparent;
-  border: 1px dashed #2563a8;
-  color: #2563a8;
-  border-radius: 3px;
-}
-.btn-inline-add:hover { background: #E8F1F5 }
-.itbl .btn-inline-add {
-  margin: 2px 8px 6px;
-  font-size: 10px;
-  font-weight: normal;
-}
-
-/* KALKULATOR HADIR */
-.calc-box {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: #f0f4f8;
-  padding: 2px 6px;
-  border-radius: 3px;
-  border: 1px solid #cbd5e1;
-  margin-right: 6px;
-}
-.calc-inp {
-  width: 36px;
-  text-align: center;
-  padding: 1px;
-  border: 1px solid #aaa;
-  border-radius: 2px;
-  font-size: 11px;
-}
-.calc-res {
-  font-weight: bold;
-  color: #1F4E79;
-}
-
-/* CONTENT SECTION */
-.c-edit{
-  display:block;padding:8px 14px;
-  font-family:Arial,sans-serif;font-size:12px;line-height:1.7;
-  word-break:break-word;text-align:justify;
-}
-
-/* TINDAK LANJUT */
-.tl-wrap{padding:8px 14px}
-.tltbl{width:100%;border-collapse:collapse;font-size:12px}
-.tltbl th{background:#D6E4F0;color:#1F4E79;font-weight:bold;padding:5px 7px;border:1px solid #bbb;text-align:left}
-.tltbl td{border:1px solid #bbb;padding:0;vertical-align:top}
-.tltbl .noc{width:34px;text-align:center;color:#555;padding:5px 4px;vertical-align:middle}
-.tltbl .xc{width:26px;text-align:center;vertical-align:middle;padding:2px}
-.tc{display:block;padding:4px 6px;font-family:Arial,sans-serif;font-size:12px;line-height:1.5;word-break:break-word}
-.tc:focus{background:rgba(37,99,168,.08)}
-.addbtn{
-  margin-top:7px;padding:4px 12px;font-size:11px;font-weight:bold;cursor:pointer;
-  background:transparent;border:1px dashed #2563a8;color:#2563a8;border-radius:3px;
-}
-.addbtn:hover{background:#D6E4F0}
-.delbtn{background:none;border:none;cursor:pointer;color:#ccc;font-size:12px;padding:2px 5px}
-.delbtn:hover{color:#c00}
-
-/* TTD */
-.ttd-wrap{padding:10px 14px}
-.ttd-grid{display:grid;gap:14px}
-.ttd-box{border:1px solid #bbb;border-radius:3px;overflow:hidden;text-align:center;position:relative}
-.ttd-rh{background:#D6E4F0;color:#1F4E79;padding:5px 8px;font-size:11px;font-weight:bold}
-.ttd-re{display:block;width:100%;text-align:center;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#1F4E79}
-.sig-wrap{background:#f9f9f9;border-bottom:1px solid #ddd;position:relative}
-canvas.sig{display:block;width:100%;height:90px;cursor:crosshair;touch-action:none}
-.ttd-meta{padding:7px 10px}
-.nm{border-bottom:1.5px solid #111;font-weight:bold;font-size:12px;padding-bottom:2px;margin-bottom:3px;display:block;width:100%;text-align:center;font-family:Arial,sans-serif}
-.np{color:#555;font-size:11px;display:block;width:100%;text-align:center;font-family:Arial,sans-serif}
-.ttd-tools{padding:3px 8px 5px;display:flex;justify-content:center;gap:6px}
-.hsig{font-size:11px;padding:3px 8px;cursor:pointer;border:1.5px solid #f88;color:#c00;background:transparent;border-radius:3px}
-.hsig:hover{background:#fff0f0}
-.upsig-btn{font-size:11px;padding:3px 8px;cursor:pointer;border:1.5px solid #2563a8;color:#2563a8;background:transparent;border-radius:3px}
-.upsig-btn:hover{background:#f0f6ff}
-.delttd{position:absolute;top:3px;right:4px;background:none;border:none;cursor:pointer;color:#bbb;font-size:12px}
-.delttd:hover{color:#c00}
-.addttd{
-  margin-top:9px;padding:4px 14px;font-size:11px;font-weight:bold;cursor:pointer;
-  background:transparent;border:1px dashed #2563a8;color:#2563a8;border-radius:3px;
-}
-.addttd:hover{background:#D6E4F0}
-
-/* DOKUMENTASI */
-.doc-wrap{padding:8px 14px}
-.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-top:6px}
-.doc-item{position:relative;border:1px solid #bbb;border-radius:3px;overflow:hidden;aspect-ratio:4/3;background:#eee}
-.doc-item img{width:100%;height:100%;object-fit:cover;display:block}
-.deldoc{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:19px;height:19px;cursor:pointer;font-size:11px;font-weight:bold;display:flex;align-items:center;justify-content:center}
-.deldoc:hover{background:rgba(180,0,0,.8)}
-.dcap{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.4);color:#fff;font-size:10px;padding:2px 5px}
-.dcap:focus{background:rgba(0,0,60,.6)}
-.upzone{border:2px dashed #bbb;border-radius:3px;padding:14px;text-align:center;cursor:pointer;color:#888;font-size:12px;margin-top:8px}
-.upzone:hover{border-color:#2563a8;background:#f0f6ff;color:#1F4E79}
-
-/* ATURAN CETAK / PRINT SETUP */
-@media print{
-  @page{
-    size: A4;
-    margin: 20mm 18mm 20mm 18mm; 
-  }
-  body{background:#fff!important}
-  
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  
-  #nav,.addbtn,.addttd,.delbtn,.deldoc,.delttd,.ttd-tools,.btn-print,.btn-reset,.upzone,#upinp,.btn-inline-add,.btn-inline-del,.calc-box{display:none!important}
-  
-  #page{
-    border:none!important;
-    max-width:100%;
-    margin:0;
-    padding:0!important; 
-  }
-  
-  [contenteditable]:hover,[contenteditable]:focus{background:transparent!important;outline:none!important}
-  
-  .sec {
-    break-inside: auto !important; 
-  }
-  .sec-hd {
-    break-after: avoid !important; 
-  }
-  .tltbl {
-    break-inside: auto !important;
-  }
-  .tltbl tr {
-    break-inside: avoid !important; 
-  }
-  .tltbl thead {
-    display: table-header-group !important; 
-  }
-  .ttd-box, .doc-item {
-    break-inside: avoid !important; 
-  }
-  canvas.sig{cursor:default}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Anomali - BPS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
+<body class="bg-[#dbeafe] text-slate-800 antialiased min-h-screen p-4 flex flex-col justify-center items-center">
 
-<div id="nav">
-  <span>Editor Notulensi Dinamis (A4 Ready) — BPS Kabupaten Lembata</span>
-  <div class="nav-buttons">
-    <button class="btn-reset" onclick="resetDraft()">&#8634; Reset Form</button>
-    <button class="btn-print" onclick="window.print()">&#128190; Simpan ke PDF</button>
-  </div>
-</div>
+    <!-- Container Utama Sesuai Sketsa UI -->
+    <div class="w-full max-w-7xl bg-[#eff6ff] border-2 border-white rounded-3xl shadow-xl p-6 flex flex-col gap-6 relative">
 
-<div id="page">
+        <!-- HEADER SECTION -->
+        <header class="bg-[#bfdbfe] border-2 border-white rounded-2xl p-4 flex flex-wrap justify-between items-center shadow-sm gap-4">
+            <!-- Logo / Identitas -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1">
+                    <span class="w-6 h-6 bg-blue-600 rounded-sm inline-block"></span>
+                    <span class="w-6 h-6 bg-emerald-500 rounded-sm inline-block"></span>
+                </div>
+                <span class="text-xs font-bold tracking-wider text-slate-700">SENSUS EKONOMI 2026</span>
+            </div>
 
-  <div id="judul">
-    <div class="j1" contenteditable="true" id="txt-j1" data-placeholder="NOTULA RAPAT"></div>
-    <div class="j2" contenteditable="true" id="txt-j2" data-placeholder="BPS KABUPATEN LEMBATA"></div>
-    <div class="j3" contenteditable="true" id="txt-j3" data-placeholder="TAHUN 2026"></div>
-  </div>
+            <!-- Judul Utama -->
+            <h1 class="text-xl font-bold text-slate-700 tracking-wide">Monitoring Anomali</h1>
 
-  <div class="sec">
-    <div class="sec-hd">INFORMASI KEGIATAN</div>
-    <table class="itbl">
-      <tr><td class="lb">1.&nbsp;Hari/Tanggal</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-tgl" data-placeholder="Jumat, 25 April 2026"></div></td></tr>
-      <tr><td class="lb">2.&nbsp;Tempat</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-tempat" data-placeholder="Aula BPS Kabupaten Lembata"></div></td></tr>
-      <tr><td class="lb">3.&nbsp;Pukul</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-pukul" data-placeholder="07.30 Wita - Selesai"></div></td></tr>
-      
-      <tr>
-        <td class="lb">4.&nbsp;Topik Materi</td>
-        <td class="cl">:</td>
-        <td class="vl">
-          <div class="dynamic-list" id="topik-container"></div>
-          <button class="btn-inline-add" onclick="addItem('topik-container', '')">+ Tambah Topik</button>
-        </td>
-      </tr>
-      
-      <tr>
-        <td class="lb">5.&nbsp;Pemateri</td>
-        <td class="cl">:</td>
-        <td class="vl">
-          <div class="dynamic-list" id="pemateri-container"></div>
-          <button class="btn-inline-add" onclick="addItem('pemateri-container', '')">+ Tambah Pemateri</button>
-        </td>
-      </tr>
-      
-      <tr><td class="lb">6.&nbsp;Notulis</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-notulis" data-placeholder="Komang Uning Sari Devi"></div></td></tr>
-      <tr><td class="lb">7.&nbsp;Link Paparan</td><td class="cl">:</td><td class="vl"><div class="editable-cell" contenteditable="true" id="info-link" data-placeholder="https://www.notion.so/bps-lembata"></div></td></tr>
-      
-      <tr>
-        <td class="lb">8.&nbsp;Lampiran 1</td>
-        <td class="cl">:</td>
-        <td class="vl">
-          <div class="editable-cell">
-            <span>Daftar hadir </span>
-            <span class="calc-box">
-              <input type="number" class="calc-inp" id="inp-hadir" value="21" oninput="calcPercent(); saveDraft();"> / 
-              <input type="number" class="calc-inp" id="inp-total" value="24" oninput="calcPercent(); saveDraft();">
-            </span>
-            <span id="kehadiran-text" class="calc-res">(Persentase kehadiran 87.5% dari 24 pegawai BPS)</span>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+            <!-- Menu Kategori & Waktu Update -->
+            <div class="flex flex-col items-end gap-2">
+                <div id="lastUpdate" class="text-[10px] bg-white/80 border border-slate-200 px-3 py-1 rounded-full text-slate-500 shadow-xs">
+                    ket. waktu update terakhir
+                </div>
+                <!-- Menu Kategori menggunakan class 'menu-item' dan atribut 'data-category' -->
+                <nav class="flex flex-wrap gap-3 text-xs font-semibold text-blue-900">
+                    <button data-category="all" class="menu-item hover:underline cursor-pointer font-bold">Semua</button>
+                    <button data-category="umum" class="menu-item hover:underline cursor-pointer">Umum</button>
+                    <button data-category="neraca" class="menu-item hover:underline cursor-pointer">Neraca</button>
+                    <button data-category="sosek" class="menu-item hover:underline cursor-pointer">Sosek</button>
+                    <button data-category="kbli" class="menu-item hover:underline cursor-pointer">KBLI</button>
+                    <!-- Contoh penambahan kategori baru di masa depan secara mudah: -->
+                    <!-- <button data-category="indikator_baru" class="menu-item hover:underline cursor-pointer">Indikator Baru</button> -->
+                </nav>
+            </div>
+        </header>
 
-  <div class="sec">
-    <div class="sec-hd">RINGKASAN PAPARAN</div>
-    <div class="dynamic-list" id="ringkasan-container"></div>
-    <button class="btn-inline-add" onclick="addItem('ringkasan-container', '')">+ Tambah Poin Ringkasan</button>
-  </div>
+        <!-- LAYOUT UTAMA (GRID 2 KOLOM: KIRI SIDEBAR, KANAN KONTEN UTAMA) -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-  <div class="sec">
-    <div class="sec-hd">PEMBAHASAN / DISKUSI</div>
-    <div class="dynamic-list" id="pembahasan-container"></div>
-    <button class="btn-inline-add" onclick="addItem('pembahasan-container', '')">+ Tambah Poin Pembahasan</button>
-  </div>
+            <!-- KOLOM KIRI: FILTER & KARTU KPI -->
+            <aside class="lg:col-span-1 flex flex-col gap-4">
+                
+                <!-- Box Filter -->
+                <div class="bg-[#bfdbfe] border-2 border-white rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+                    <div class="text-xs font-bold text-slate-700 text-center mb-1">Filter</div>
+                    <select id="filterKecamatan" onchange="applyFilters()" class="text-xs bg-white border border-slate-300 rounded-xl p-2.5 outline-none shadow-xs">
+                        <option value="">(dropdown) Kecamatan</option>
+                    </select>
+                    <select id="filterDesa" onchange="applyFilters()" class="text-xs bg-white border border-slate-300 rounded-xl p-2.5 outline-none shadow-xs">
+                        <option value="">(dropdown) Desa</option>
+                    </select>
+                    <select id="filterKorwil" onchange="applyFilters()" class="text-xs bg-white border border-slate-300 rounded-xl p-2.5 outline-none shadow-xs">
+                        <option value="">(dropdown) Korwil</option>
+                    </select>
+                    <select id="filterPml" onchange="applyFilters()" class="text-xs bg-white border border-slate-300 rounded-xl p-2.5 outline-none shadow-xs">
+                        <option value="">(dropdown) PML</option>
+                    </select>
+                    <select id="filterPpl" onchange="applyFilters()" class="text-xs bg-white border border-slate-300 rounded-xl p-2.5 outline-none shadow-xs">
+                        <option value="">(dropdown) PPL</option>
+                    </select>
+                    <input type="text" id="globalSearch" oninput="applyFilters()" placeholder="Global Search..." class="text-xs bg-white border border-slate-300 rounded-xl p-2.5 outline-none shadow-xs">
+                </div>
 
-  <div class="sec">
-    <div class="sec-hd">KESIMPULAN</div>
-    <div class="dynamic-list" id="kesimpulan-container"></div>
-    <button class="btn-inline-add" onclick="addItem('kesimpulan-container', '')">+ Tambah Poin Kesimpulan</button>
-  </div>
+                <!-- Box KPI 1: Total Anomali -->
+                <div class="bg-[#bfdbfe] border-2 border-white rounded-2xl p-4 text-center shadow-sm">
+                    <div class="text-xs font-semibold text-slate-700">Total anomali</div>
+                    <div id="kpiTotal" class="text-2xl font-bold text-blue-900 mt-1">0</div>
+                </div>
 
-  <div class="sec">
-    <div class="sec-hd">TINDAK LANJUT</div>
-    <div class="tl-wrap">
-      <table class="tltbl">
-        <thead>
-          <tr>
-            <th style="width:34px;text-align:center">No.</th>
-            <th>Uraian Tindak Lanjut</th>
-            <th style="width:148px">Penanggung Jawab</th>
-            <th style="width:96px">Batas Waktu</th>
-            <th style="width:26px"></th>
-          </tr>
-        </thead>
-        <tbody id="tlbody"></tbody>
-      </table>
-      <button class="addbtn" onclick="addTL(); saveDraft();">+ Tambah Baris</button>
+                <!-- Box KPI 2: Jumlah anomali yang sudah ditindak -->
+                <div class="bg-[#bfdbfe] border-2 border-white rounded-2xl p-4 text-center shadow-sm">
+                    <div class="text-xs font-semibold text-slate-700">Jumlah anomali yang sudah ditindak</div>
+                    <div id="kpiResolved" class="text-2xl font-bold text-emerald-700 mt-1">0</div>
+                </div>
+
+                <!-- Box KPI 3: Jumlah anomali yang tersisa -->
+                <div class="bg-[#bfdbfe] border-2 border-white rounded-2xl p-4 text-center shadow-sm">
+                    <div class="text-xs font-semibold text-slate-700">Jumlah anomali yang tersisa</div>
+                    <div id="kpiOpen" class="text-2xl font-bold text-amber-700 mt-1">0</div>
+                </div>
+
+                <!-- Box Penjelasan Nama Anomali -->
+                <div class="bg-[#bfdbfe] border-2 border-white rounded-2xl p-4 shadow-sm text-center">
+                    <div class="text-xs font-semibold text-slate-700 mb-2">Penjelasan nama anomali</div>
+                    <div id="anomaliListContainer" class="text-[11px] text-slate-600 bg-white/60 p-2 rounded-xl max-h-32 overflow-y-auto space-y-1">
+                        <div>Klik badge anomali pada tabel untuk melihat detail panduan dan solusi.</div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- KOLOM KANAN: STATISTIK GRAFIK & TABEL -->
+            <main class="lg:col-span-3 flex flex-col gap-6">
+
+                <!-- Main Wrapper Grafik & Tabel -->
+                <div class="bg-gradient-to-br from-[#d1fae5] via-[#a7f3d0] to-[#bfdbfe] border-2 border-white rounded-3xl p-6 shadow-sm flex flex-col gap-6">
+                    
+                    <h2 class="text-center font-bold text-slate-700 text-sm tracking-wide">Statistik anomali</h2>
+
+                    <!-- Bagian Grafik (2 Chart Side-by-Side) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Chart 1 -->
+                        <div class="bg-white/80 border border-white rounded-2xl p-4 shadow-xs flex flex-col items-center">
+                            <span class="text-[11px] font-semibold text-slate-600 mb-2">Jumlah anomali terbanyak</span>
+                            <div class="w-full h-48"><canvas id="chartKategori"></canvas></div>
+                        </div>
+                        <!-- Chart 2 -->
+                        <div class="bg-white/80 border border-white rounded-2xl p-4 shadow-xs flex flex-col items-center">
+                            <span class="text-[11px] font-semibold text-slate-600 mb-2">anomali per kecamatan</span>
+                            <div class="w-full h-48"><canvas id="chartWilayah"></canvas></div>
+                        </div>
+                    </div>
+
+                    <!-- Bagian Tabel Anomali Dinamis -->
+                    <div class="bg-white/90 border border-white rounded-2xl shadow-xs overflow-hidden flex flex-col">
+                        <div class="bg-[#93c5fd] text-white text-xs font-bold py-2.5 px-4 text-center tracking-wider">
+                            Tabel anomali
+                        </div>
+                        <div class="p-3 flex justify-end">
+                            <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-medium px-3 py-1.5 rounded-lg transition-colors shadow-xs">
+                                Unduh Laporan Excel/PDF (CSV)
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-96">
+                            <table class="w-full text-left text-xs text-slate-700">
+                                <thead id="tableHeader" class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 sticky top-0 z-10">
+                                    <!-- Header akan dirender dinamis berdasarkan kolom dari Google Sheets -->
+                                </thead>
+                                <tbody id="tableBody" class="divide-y divide-slate-200">
+                                    <tr><td class="p-4 text-center text-slate-400">Pilih kategori menu di atas untuk memuat data.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
     </div>
-  </div>
 
-  <div class="sec">
-    <div class="sec-hd">PENUTUP</div>
-    <div class="c-edit" contenteditable="true" id="txt-penutup" data-placeholder="Rapat ditutup pada pukul _____ Wita. Seluruh peserta diminta menindaklanjuti hasil rapat sesuai tugas masing-masing."></div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-hd">TANDA TANGAN</div>
-    <div class="ttd-wrap">
-      <div class="ttd-grid" id="ttdgrid"></div>
-      <button class="addttd" onclick="addTTD(); saveDraft();">+ Tambah Kolom TTD</button>
+    <!-- Modal Panduan / Deskripsi Anomali -->
+    <div id="descModal" class="fixed inset-0 bg-black/40 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+            <h3 id="modalTitle" class="text-sm font-bold text-slate-800 border-b pb-2">Detail Anomali</h3>
+            <div class="space-y-2 text-xs text-slate-600">
+                <p><strong>Deskripsi Singkat:</strong> <span id="modalDesc">-</span></p>
+                <p><strong>Penjelasan Detail:</strong> <span id="modalDetail">-</span></p>
+                <p class="text-blue-800 bg-blue-50 p-3 rounded-xl border border-blue-100"><strong>Solusi Perbaikan:</strong> <span id="modalSolusi">-</span></p>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal()" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs hover:bg-slate-900">Tutup</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="sec">
-    <div class="sec-hd">DOKUMENTASI</div>
-    <div class="doc-wrap">
-      <div class="doc-grid" id="docgrid"></div>
-      <div class="upzone" onclick="document.getElementById('upinp').click()">&#8679; Klik untuk upload foto dokumentasi (bisa pilih banyak sekaligus)</div>
-      <input type="file" id="upinp" accept="image/*" multiple style="display:none" onchange="handleUp(event)"/>
-    </div>
-  </div>
+    <!-- JavaScript Logika & Integrasi GVIZ API Google Sheets -->
+    <script>
+        // Konfigurasi sumber data Spreadsheet (Sosek disesuaikan dengan ID & Sheet AAK1 dari gambar)
+        const CONFIG = {
+            'umum': { id: 'ID_SPREADSHEET_UMUM', sheet: 'Data_Umum' },
+            'neraca': { id: 'ID_SPREADSHEET_NERACA', sheet: 'Sheet1' },
+            'sosek': { id: '1GbgXIIWkzu9ar74OtbCAB6pFccVAMc3Qt_wwEhonNTw', sheet: 'AAK1' },
+            'kbli': { id: 'ID_SPREADSHEET_KBLI', sheet: 'Daftar_KBLI' }
+            // Cukup tambahkan satu baris baru di objek CONFIG untuk indikator di masa depan:
+            // 'indikator_baru': { id: 'ID_SPREADSHEET_NYA', sheet: 'Nama_Tab_Baru' }
+        };
 
-</div>
+        let currentActiveData = [];
+        let katChartInstance = null;
+        let wilChartInstance = null;
 
-<script>
-// Fungsi Tambah List Dinamis
-function addItem(containerId, text) {
-  var container = document.getElementById(containerId);
-  var item = document.createElement('div');
-  item.className = 'dynamic-item';
-  
-  var ph = "Tulis di sini...";
-  if(containerId==='topik-container') ph = "Tulis topik baru di sini...";
-  if(containerId==='pemateri-container') ph = "Nama Pemateri / Jabatan...";
-  if(containerId==='ringkasan-container') ph = "Poin paparan mengenai capaian target...";
-  if(containerId==='pembahasan-container') ph = "Tulis hasil pembahasan / pertanyaan...";
-  if(containerId==='kesimpulan-container') ph = "Tulis poin kesimpulan rapat...";
+        // Event listener untuk tombol menu kategori
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const category = e.target.dataset.category; // Pastikan tombol menu punya data-category
+                
+                // Ubah gaya visual tombol aktif
+                document.querySelectorAll('.menu-item').forEach(btn => btn.style.fontWeight = 'normal');
+                e.target.style.fontWeight = 'bold';
 
-  item.innerHTML = `
-    <span class="bullet-sign">&#9632;</span>
-    <div class="item-text" contenteditable="true" data-placeholder="${ph}">${text}</div>
-    <button class="btn-inline-del" onclick="this.parentElement.remove(); saveDraft();">&#10005;</button>
-  `;
-  container.appendChild(item);
-  
-  item.querySelector('.item-text').addEventListener('input', saveDraft);
-  
-  if(!text) {
-    item.querySelector('.item-text').focus();
-  }
-}
+                if(category === 'all') {
+                    // Jika 'Semua' dipilih, defaultkan memuat sosek atau gabungan
+                    loadCategoryData('sosek');
+                } else {
+                    loadCategoryData(category);
+                }
+            });
+        });
 
-// Kalkulator Kehadiran
-function calcPercent() {
-  var hadir = parseFloat(document.getElementById('inp-hadir').value) || 0;
-  var total = parseFloat(document.getElementById('inp-total').value) || 0;
-  var textEl = document.getElementById('kehadiran-text');
-  if (total <= 0) {
-    textEl.textContent = `(Data tidak valid / pembagi 0)`;
-    return;
-  }
-  var percent = ((hadir / total) * 100).toFixed(1);
-  if(percent.endsWith('.0')) { percent = Math.round(percent); }
-  textEl.textContent = `(Persentase kehadiran ${percent}% dari ${total} pegawai BPS)`;
-}
+        // Fungsi pemuatan data via Google Visualization API (gviz/tq)
+        async function loadCategoryData(category) {
+            const config = CONFIG[category];
+            if (!config) return;
 
-// TTD SYSTEM WITH UPLOAD OPTION
-var ttds = [];
-var cvs = [];
+            // URL API Resmi Google
+            const url = `https://docs.google.com/spreadsheets/d/${config.id}/gviz/tq?tqx=out:json&sheet=${config.sheet}`;
+            
+            try {
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Memuat data ${category}...</td></tr>`;
+                const response = await fetch(url);
+                const text = await response.text();
+                // Membersihkan respon agar menjadi JSON murni
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                // Mengubah format Gviz menjadi Array Objek sederhana
+                const headers = json.table.cols.map(col => col.label || col.id);
+                const data = json.table.rows.map(row => {
+                    let obj = {};
+                    row.c.forEach((cell, i) => {
+                        obj[headers[i] || `col_${i}`] = cell ? cell.v : null;
+                    });
+                    return obj;
+                });
 
-function mkBox(d, i) {
-  var b = document.createElement('div'); b.className = 'ttd-box';
-  var rh = document.createElement('div'); rh.className = 'ttd-rh';
-  var re = document.createElement('div'); re.className = 'ttd-re'; re.contentEditable = 'true'; 
-  re.setAttribute('data-placeholder', 'Jabatan,'); re.textContent = d.role;
-  rh.appendChild(re); b.appendChild(rh);
+                console.log(`Data ${category} dimuat:`, data);
+                currentActiveData = data;
+                updateDashboard(data); // Fungsi untuk mengisi tabel/grafik
+                document.getElementById('lastUpdate').innerText = 'Update terakhir: ' + new Date().toLocaleTimeString('id-ID');
+            } catch (err) {
+                console.error("Error loading data:", err);
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Gagal memuat data. Periksa ID Spreadsheet atau izin akses Publik (Anyone with the link can view).</td></tr>`;
+            }
+        }
 
-  var sw = document.createElement('div'); sw.className = 'sig-wrap';
-  var cv = document.createElement('canvas'); cv.className = 'sig'; cv.width = 280; cv.height = 90;
-  sw.appendChild(cv); cvs[i] = cv;
+        function updateDashboard(data) {
+            renderKPI(data);
+            populateFilters(data);
+            renderCharts(data);
+            renderTable(data);
+        }
 
-  var dx = document.createElement('button'); dx.className = 'delttd'; dx.innerHTML = '&#10005;';
-  dx.onclick = (function(n) {
-    return function() {
-      updateTtdDataStructure();
-      ttds.splice(n, 1);
-      renderTTD();
-      saveDraft();
-    }
-  })(i);
-  sw.appendChild(dx); b.appendChild(sw);
+        function renderKPI(data) {
+            const total = data.length;
+            // Simulasi status jika kolom tidak ada
+            const resolved = data.filter(d => d.status === true || d.assignment_id === true).length;
+            const open = total - resolved;
 
-  var mt = document.createElement('div'); mt.className = 'ttd-meta';
-  var nm = document.createElement('div'); nm.className = 'nm'; nm.contentEditable = 'true'; 
-  nm.setAttribute('data-placeholder', 'Nama Lengkap'); nm.textContent = d.name;
-  var np = document.createElement('div'); np.className = 'np'; np.contentEditable = 'true'; 
-  np.setAttribute('data-placeholder', 'NIP.'); np.textContent = d.nip;
-  mt.appendChild(nm); mt.appendChild(np); b.appendChild(mt);
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiResolved').textContent = resolved;
+            document.getElementById('kpiOpen').textContent = open;
+        }
 
-  // Hidden Input File untuk upload TTD per box
-  var finp = document.createElement('input');
-  finp.type = 'file';
-  finp.accept = 'image/*';
-  finp.style.display = 'none';
-  finp.onchange = function(e) {
-    if(e.target.files && e.target.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        loadSigData(cv, ev.target.result);
-        setTimeout(saveDraft, 200); // Trigger simpan setelah gambar termuat
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
-  b.appendChild(finp);
+        function populateFilters(data) {
+            if (!data || data.length === 0) return;
+            
+            // Mengambil kolom yang menyerupai wilayah secara dinamis dari data spreadsheet
+            const kecs = [...new Set(data.map(d => d.KEC || d.KECAMATAN || d.kecamatan))].filter(Boolean);
+            const desas = [...new Set(data.map(d => d.DESA || d.desa))].filter(Boolean);
 
-  var tl = document.createElement('div'); tl.className = 'ttd-tools';
-  
-  var hb = document.createElement('button'); hb.className = 'hsig'; hb.textContent = 'Hapus';
-  hb.onclick = (function(c) {
-    return function() {
-      c.getContext('2d').clearRect(0, 0, c.width, c.height);
-      saveDraft();
-    }
-  })(cv);
-  
-  var ub = document.createElement('button'); ub.className = 'upsig-btn'; ub.textContent = 'Upload';
-  ub.onclick = function() { finp.click(); };
+            fillSelect('filterKecamatan', kecs, 'Kecamatan');
+            fillSelect('filterDesa', desas, 'Desa');
+        }
 
-  tl.appendChild(ub);
-  tl.appendChild(hb);
-  b.appendChild(tl);
+        function fillSelect(id, items, label) {
+            const el = document.getElementById(id);
+            const current = el.value;
+            el.innerHTML = `<option value="">(dropdown) ${label}</option>`;
+            items.forEach(i => {
+                el.innerHTML += `<option value="${i}">${i}</option>`;
+            });
+            el.value = current;
+        }
 
-  re.addEventListener('input', saveDraft);
-  nm.addEventListener('input', saveDraft);
-  np.addEventListener('input', saveDraft);
+        function applyFilters() {
+            if (!currentActiveData) return;
+            let data = currentActiveData;
 
-  return b;
-}
+            const kec = document.getElementById('filterKecamatan').value;
+            const desa = document.getElementById('filterDesa').value;
+            const search = document.getElementById('globalSearch').value.toLowerCase();
 
-function updateTtdDataStructure() {
-  var g = document.getElementById('ttdgrid');
-  var boxes = g.getElementsByClassName('ttd-box');
-  ttds = [];
-  for (var i = 0; i < boxes.length; i++) {
-    var role = boxes[i].querySelector('.ttd-re').textContent;
-    var name = boxes[i].querySelector('.nm').textContent;
-    var nip = boxes[i].querySelector('.np').textContent;
-    
-    var canvas = boxes[i].querySelector('canvas');
-    var dataUrl = canvas ? canvas.toDataURL() : "";
-    
-    ttds.push({ role: role, name: name, nip: nip, sigData: dataUrl });
-  }
-}
+            data = data.filter(row => {
+                const rowKec = String(row.KEC || row.KECAMATAN || row.kecamatan || '');
+                const rowDesa = String(row.DESA || row.desa || '');
 
-function renderTTD() {
-  var g = document.getElementById('ttdgrid');
-  g.innerHTML = ''; cvs = [];
-  g.style.gridTemplateColumns = 'repeat(' + Math.min(ttds.length, 3) + ',1fr)';
-  
-  for (var i = 0; i < ttds.length; i++) {
-    g.appendChild(mkBox(ttds[i], i));
-  }
-  for (var j = 0; j < cvs.length; j++) {
-    initSig(cvs[j]);
-    if (ttds[j] && ttds[j].sigData) {
-      loadSigData(cvs[j], ttds[j].sigData);
-    }
-  }
-}
+                if (kec && rowKec !== kec) return false;
+                if (desa && rowDesa !== desa) return false;
+                if (search) {
+                    const matchText = Object.values(row).some(val => String(val).toLowerCase().includes(search));
+                    if (!matchText) return false;
+                }
+                return true;
+            });
 
-function addTTD() {
-  updateTtdDataStructure();
-  ttds.push({ role: "", name: "", nip: "" });
-  renderTTD();
-}
+            renderTable(data);
+        }
 
-function initSig(cv) {
-  var ctx = cv.getContext('2d');
-  ctx.strokeStyle = '#111'; ctx.lineWidth = 1.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  var on = false;
-  function pt(e) {
-    var r = cv.getBoundingClientRect(), sx = cv.width / r.width, sy = cv.height / r.height;
-    var cx = e.touches ? e.touches[0].clientX : e.clientX;
-    var cy = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x: (cx - r.left) * sx, y: (cy - r.top) * sy };
-  }
-  cv.onmousedown = function(e) { on = true; var p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y) };
-  cv.onmousemove = function(e) { if (!on) return; var p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y) };
-  cv.onmouseup = cv.onmouseleave = function() { if(on){ on = false; saveDraft(); } };
-  
-  cv.addEventListener('touchstart', function(e) { e.preventDefault(); on = true; var p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y) }, { passive: false });
-  cv.addEventListener('touchmove', function(e) { e.preventDefault(); if (!on) return; var p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y) }, { passive: false });
-  cv.addEventListener('touchend', function() { on = false; saveDraft(); });
-}
+        function renderCharts(data) {
+            const kecCount = {};
+            data.forEach(d => {
+                const kec = d.KEC || d.KECAMATAN || d.kecamatan || 'Lainnya';
+                kecCount[kec] = (kecCount[kec] || 0) + 1;
+            });
 
-function loadSigData(cv, dataUrl) {
-  if (!dataUrl || dataUrl.startsWith("data:image/gif;base64")) return;
-  var ctx = cv.getContext('2d');
-  var img = new Image();
-  img.onload = function() {
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    
-    // Hitung rasio aspek gambar agar pas di dalam kotak canvas (90px) tanpa terdistorsi
-    var hRatio = cv.width / img.width;
-    var vRatio = cv.height / img.height;
-    var ratio  = Math.min(hRatio, vRatio);
-    var centerShift_x = (cv.width - img.width * ratio) / 2;
-    var centerShift_y = (cv.height - img.height * ratio) / 2;  
-    
-    ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
-  };
-  img.src = dataUrl;
-}
+            if (katChartInstance) katChartInstance.destroy();
+            katChartInstance = new Chart(document.getElementById('chartKategori'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(kecCount).slice(0, 8),
+                    datasets: [{ label: 'Jumlah Record', data: Object.values(kecCount).slice(0, 8), backgroundColor: '#3b82f6' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
 
-// TINDAK LANJUT
-var tln = 0;
-function addTL(val1 = "", val2 = "", val3 = "") {
-  tln++; var id = 'tl' + tln;
-  var tb = document.getElementById('tlbody');
-  var idx = tb.rows.length + 1;
-  var tr = document.createElement('tr'); tr.id = id;
-  
-  function editd(val, ph) {
-    var d = document.createElement('div'); 
-    d.className = 'tc'; 
-    d.contentEditable = 'true';
-    d.setAttribute('data-placeholder', ph);
-    d.textContent = val;
-    d.addEventListener('input', saveDraft);
-    return d;
-  }
-  
-  var c1 = document.createElement('td'); c1.appendChild(editd(val1, "Uraian kegiatan..."));
-  var c2 = document.createElement('td'); c2.appendChild(editd(val2, "Nama Penanggung Jawab..."));
-  var c3 = document.createElement('td'); c3.appendChild(editd(val3, "dd/mm/yyyy"));
-  
-  var cx = document.createElement('td'); cx.className = 'xc';
-  var db = document.createElement('button'); db.className = 'delbtn'; db.innerHTML = '&#10005;';
-  db.onclick = (function(rid) {
-    return function() {
-      var el = document.getElementById(rid); if (el) el.remove();
-      var rows = document.getElementById('tlbody').rows;
-      for (var k = 0; k < rows.length; k++) rows[k].cells[0].textContent = k + 1;
-      saveDraft();
-    }
-  })(id);
-  cx.appendChild(db);
-  
-  var no = document.createElement('td'); no.className = 'noc'; no.textContent = idx;
-  tr.appendChild(no); tr.appendChild(c1); tr.appendChild(c2); tr.appendChild(c3); tr.appendChild(cx);
-  tb.appendChild(tr);
-}
+            if (wilChartInstance) wilChartInstance.destroy();
+            wilChartInstance = new Chart(document.getElementById('chartWilayah'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(kecCount).slice(0, 8),
+                    datasets: [{ label: 'Wilayah', data: Object.values(kecCount).slice(0, 8), backgroundColor: '#10b981' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
 
-// DOKUMENTASI
-function handleUp(e) {
-  Array.from(e.target.files).forEach(function(f) {
-    var r = new FileReader();
-    r.onload = function(ev) {
-      createDocItem(ev.target.result, f.name.replace(/\.[^.]+$/, ''));
-      saveDraft();
-    };
-    r.readAsDataURL(f);
-  });
-  e.target.value = '';
-}
+        function renderTable(data) {
+            const thead = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
 
-function createDocItem(src, caption) {
-  var w = document.createElement('div'); w.className = 'doc-item';
-  var img = document.createElement('img'); img.src = src; img.alt = 'foto';
-  var dx = document.createElement('button'); dx.className = 'deldoc'; dx.innerHTML = '&#10005;'; 
-  dx.onclick = function() { w.remove(); saveDraft(); };
-  var cap = document.createElement('div'); cap.className = 'dcap'; cap.contentEditable = 'true'; 
-  cap.setAttribute('data-placeholder', 'Keterangan foto...'); cap.textContent = caption;
-  cap.addEventListener('input', saveDraft);
-  
-  w.appendChild(img); w.appendChild(dx); w.appendChild(cap);
-  document.getElementById('docgrid').appendChild(w);
-}
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tidak ada data ditemukan.</td></tr>`;
+                return;
+            }
 
-// ==========================================
-// SYSTEM AUTO-SAVE DRAFT (LOCALSTORAGE)
-// ==========================================
-const STORAGE_KEY = 'bps_lembata_notula_draft';
+            // Ambil kunci kolom dinamis dari baris pertama data gviz
+            const keys = Object.keys(data[0]).slice(0, 10); // Batasi 10 kolom pertama agar rapi di tabel
 
-function saveDraft() {
-  updateTtdDataStructure();
+            let headerHtml = '<tr>';
+            keys.forEach(k => {
+                headerHtml += `<th class="p-3 uppercase text-[11px]">${k.replace(/_/g, ' ')}</th>`;
+            });
+            headerHtml += '</tr>';
+            thead.innerHTML = headerHtml;
 
-  var getListItems = function(containerId) {
-    var arr = [];
-    var items = document.querySelectorAll('#' + containerId + ' .item-text');
-    items.forEach(el => arr.push(el.textContent));
-    return arr;
-  };
+            data.slice(0, 100).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                let rowHtml = '';
+                keys.forEach(k => {
+                    rowHtml += `<td class="p-3 truncate max-w-xs">${row[k] !== null ? row[k] : '-'}</td>`;
+                });
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+            });
+        }
 
-  var tlRows = [];
-  var rows = document.querySelectorAll('#tlbody tr');
-  rows.forEach(row => {
-    var cells = row.querySelectorAll('.tc');
-    if(cells.length >= 3) {
-      tlRows.push({
-        uraian: cells[0].textContent,
-        pj: cells[1].textContent,
-        deadline: cells[2].textContent
-      });
-    }
-  });
+        function closeModal() {
+            document.getElementById('descModal').classList.add('hidden');
+        }
 
-  var docs = [];
-  var docItems = document.querySelectorAll('#docgrid .doc-item');
-  docItems.forEach(item => {
-    var imgSrc = item.querySelector('img').src;
-    var imgCap = item.querySelector('.dcap').textContent;
-    docs.push({ src: imgSrc, cap: imgCap });
-  });
+        function exportToCSV() {
+            if (!currentActiveData.length) return alert('Tidak ada data untuk diexport');
+            const keys = Object.keys(currentActiveData[0]);
+            let csv = keys.join(',') + '\n';
+            currentActiveData.forEach(d => {
+                csv += keys.map(k => `"${d[k] !== null ? d[k] : ''}"`).join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'laporan_sosek.csv';
+            a.click();
+        }
 
-  var draftData = {
-    j1: document.getElementById('txt-j1').textContent,
-    j2: document.getElementById('txt-j2').textContent,
-    j3: document.getElementById('txt-j3').textContent,
-    tgl: document.getElementById('info-tgl').textContent,
-    tempat: document.getElementById('info-tempat').textContent,
-    pukul: document.getElementById('info-pukul').textContent,
-    notulis: document.getElementById('info-notulis').textContent,
-    link: document.getElementById('info-link').textContent,
-    hadir: document.getElementById('inp-hadir').value,
-    total: document.getElementById('inp-total').value,
-    penutup: document.getElementById('txt-penutup').textContent,
-    topik: getListItems('topik-container'),
-    pemateri: getListItems('pemateri-container'),
-    ringkasan: getListItems('ringkasan-container'),
-    pembahasan: getListItems('pembahasan-container'),
-    kesimpulan: getListItems('kesimpulan-container'),
-    tindakLanjut: tlRows,
-    signatures: ttds,
-    dokumentasi: docs
-  };
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(draftData));
-}
-
-function loadDraft() {
-  var rawData = localStorage.getItem(STORAGE_KEY);
-  
-  if (!rawData) {
-    initDefaultEmptyTemplate();
-    return;
-  }
-
-  try {
-    var data = JSON.parse(rawData);
-
-    document.getElementById('txt-j1').textContent = data.j1 || "";
-    document.getElementById('txt-j2').textContent = data.j2 || "";
-    document.getElementById('txt-j3').textContent = data.j3 || "";
-    document.getElementById('info-tgl').textContent = data.tgl || "";
-    document.getElementById('info-tempat').textContent = data.tempat || "";
-    document.getElementById('info-pukul').textContent = data.pukul || "";
-    document.getElementById('info-notulis').textContent = data.notulis || "";
-    document.getElementById('info-link').textContent = data.link || "";
-    document.getElementById('inp-hadir').value = data.hadir || 0;
-    document.getElementById('inp-total').value = data.total || 0;
-    document.getElementById('txt-penutup').textContent = data.penutup || "";
-
-    if(data.topik) data.topik.forEach(t => addItem('topik-container', t));
-    if(data.pemateri) data.pemateri.forEach(p => addItem('pemateri-container', p));
-    if(data.ringkasan) data.ringkasan.forEach(r => addItem('ringkasan-container', r));
-    if(data.pembahasan) data.pembahasan.forEach(pb => addItem('pembahasan-container', pb));
-    if(data.kesimpulan) data.kesimpulan.forEach(k => addItem('kesimpulan-container', k));
-
-    if(data.tindakLanjut && data.tindakLanjut.length > 0) {
-      data.tindakLanjut.forEach(row => addTL(row.uraian, row.pj, row.deadline));
-    } else {
-      addTL(); addTL();
-    }
-
-    if(data.signatures && data.signatures.length > 0) {
-      ttds = data.signatures;
-      renderTTD();
-    } else {
-      initDefaultSignatures();
-    }
-
-    if(data.dokumentasi) {
-      data.dokumentasi.forEach(d => createDocItem(d.src, d.cap));
-    }
-
-    calcPercent();
-
-  } catch (e) {
-    console.error("Gagal load draft notulensi:", e);
-    initDefaultEmptyTemplate();
-  }
-}
-
-function initDefaultEmptyTemplate() {
-  addItem('topik-container', '');
-  addItem('pemateri-container', '');
-  addItem('ringkasan-container', '');
-  addItem('pembahasan-container', '');
-  addItem('kesimpulan-container', '');
-  addTL(); addTL();
-  initDefaultSignatures();
-  calcPercent();
-}
-
-function initDefaultSignatures() {
-  ttds = [
-    { role: "", name: "", nip: "" },
-    { role: "", name: "", nip: "" }
-  ];
-  renderTTD();
-  
-  var boxes = document.getElementsByClassName('ttd-box');
-  if(boxes.length >= 2) {
-    boxes[0].querySelector('.ttd-re').setAttribute('data-placeholder', 'Notulis,');
-    boxes[1].querySelector('.ttd-re').setAttribute('data-placeholder', 'Mengetahui,\nKepala BPS Kabupaten Lembata,');
-  }
-}
-
-function resetDraft() {
-  if (confirm("Apakah Anda yakin ingin menghapus semua isi draft? Data yang sudah diisi akan hilang permanen.")) {
-    localStorage.removeItem(STORAGE_KEY);
-    window.location.reload();
-  }
-}
-
-document.querySelectorAll('[contenteditable]').forEach(el => {
-  el.addEventListener('input', saveDraft);
-});
-
-window.onload = function() {
-  loadDraft();
-};
-</script>
+        // Muat data default pertama kali (Sosek)
+        loadCategoryData('sosek');
+    </script>
 </body>
 </html>
